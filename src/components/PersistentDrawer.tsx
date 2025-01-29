@@ -10,11 +10,22 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  useTheme,
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import { Business, Home, ListAlt, Logout, People } from "@mui/icons-material";
+import {
+  Business,
+  Call,
+  DarkMode,
+  Home,
+  LightMode,
+  ListAlt,
+  Logout,
+  People,
+  Work,
+} from "@mui/icons-material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -80,7 +91,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-const PersistentDrawer = () => {
+const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const navigate = useNavigate();
   const { logout } = useAuth0();
   // const theme = useTheme();
@@ -94,9 +105,16 @@ const PersistentDrawer = () => {
   //   setOpen(false);
   // };
 
+  const theme = useTheme();
+
   const itemList = [
     { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
-    { text: "Orders", icon: <ListAlt />, onClick: () => navigate("/orders") },
+    { text: "Jobs", icon: <Work />, onClick: () => navigate("/orders") },
+    {
+      text: "Calls",
+      icon: <Call />,
+      onClick: () => navigate("/calls"),
+    },
     {
       text: "Technicians",
       icon: <People />,
@@ -111,6 +129,11 @@ const PersistentDrawer = () => {
       text: "Logout",
       icon: <Logout />,
       onClick: () => logout(),
+    },
+    {
+      text: theme.palette.mode === "dark" ? "Light Mode" : "Dark Mode",
+      icon: theme.palette.mode === "dark" ? <LightMode /> : <DarkMode />,
+      onClick: () => toggleTheme(),
     },
   ];
   return (
