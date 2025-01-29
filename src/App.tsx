@@ -3,8 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import PersistentDrawer from "./components/PersistentDrawer";
 import { Box } from "@mui/material";
+import Calls from "./pages/Calls";
 
-const App = () => {
+const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const drawerWidth = 240;
   return (
     <Box>
@@ -18,9 +19,10 @@ const App = () => {
           alignItems: "center",
         }}
       >
-        <PersistentDrawer />
+        <PersistentDrawer toggleTheme={toggleTheme} />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/calls" element={<Calls />} />
         </Routes>
       </Box>
     </Box>
