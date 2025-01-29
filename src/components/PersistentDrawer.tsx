@@ -14,7 +14,7 @@ import {
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import { Business, Home, Logout, People } from "@mui/icons-material";
+import { Business, Home, ListAlt, Logout, People } from "@mui/icons-material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -96,16 +96,16 @@ const PersistentDrawer = () => {
 
   const itemList = [
     { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
-    { text: "Users", icon: <People />, onClick: () => navigate("/users") },
+    { text: "Orders", icon: <ListAlt />, onClick: () => navigate("/orders") },
     {
-      text: "Services",
+      text: "Technicians",
       icon: <People />,
-      onClick: () => navigate("/services"),
+      onClick: () => navigate("/technicians"),
     },
     {
-      text: "Companies",
+      text: "Profile",
       icon: <Business />,
-      onClick: () => navigate("/companies"),
+      onClick: () => navigate("/profile"),
     },
     {
       text: "Logout",
@@ -130,7 +130,7 @@ const PersistentDrawer = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">TakTek Admin Panel</Typography>
+          <Typography variant="h6">Company Panel</Typography>
         </Toolbar>
       </AppBar>
       <Drawer
