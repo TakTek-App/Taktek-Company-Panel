@@ -24,6 +24,7 @@ const ContentWraper: React.FC<ContentWraperProps> = ({
         padding: 4,
         width: `calc(100% - 240px)`,
         marginLeft: "240px",
+        marginTop: "120px",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
