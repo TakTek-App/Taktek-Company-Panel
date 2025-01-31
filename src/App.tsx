@@ -9,6 +9,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const drawerWidth = 240;
   return (
     <Box>
+      <PersistentDrawer toggleTheme={toggleTheme} />
       <Box
         sx={{
           width: `calc(100% - ${drawerWidth}px)`,
@@ -19,7 +20,6 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
           alignItems: "center",
         }}
       >
-        <PersistentDrawer toggleTheme={toggleTheme} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/calls" element={<Calls />} />
