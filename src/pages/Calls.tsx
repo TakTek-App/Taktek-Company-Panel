@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
 import { Box, Button, Skeleton, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContextWrapper";
 
 const socket = io("https://signaling-server-yoj5.onrender.com");
 const socketPeer = {
@@ -34,6 +35,7 @@ interface Peer {
 // }
 
 const Calls = () => {
+  const { company } = useAuth();
   const [available, setAvailable] = useState<boolean>(false);
   const [onJob, setOnJob] = useState<boolean>(false);
   const [hiringUser, setHiringUser] = useState<string | null>(null);
@@ -838,6 +840,11 @@ const Calls = () => {
           }}
         />
       )} */}
+      {company && (
+        <Box>
+          <Typography>{company.name}</Typography>
+        </Box>
+      )}
       <div style={{ padding: 20 }}>
         <h2>Technician ID: {socketPeer.socketId}</h2>
         {!inCall && !incomingCall && (
