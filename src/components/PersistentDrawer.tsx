@@ -29,6 +29,7 @@ import {
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../contexts/AuthContextWrapper";
 
 const drawerWidth = 240;
 
@@ -93,7 +94,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const navigate = useNavigate();
-  const { logout } = useAuth0();
+  const { setSignedIn } = useAuth();
   // const theme = useTheme();
   const [open, setOpen] = useState(true);
 
@@ -104,6 +105,11 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
   // const handleDrawerClose = () => {
   //   setOpen(false);
   // };
+
+  const logout = () => {
+    setSignedIn(false);
+    navigate("/");
+  };
 
   const theme = useTheme();
 

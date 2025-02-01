@@ -5,6 +5,7 @@ import { ThemeProvider } from "@mui/material";
 import App from "./App";
 import { darkTheme, lightTheme } from "./customTheme";
 import { StrictMode, useState } from "react";
+import AuthContextWrapper from "./contexts/AuthContextWrapper";
 
 const Root = () => {
   const [themeMode, setThemeMode] = useState(() => {
@@ -27,7 +28,9 @@ const Root = () => {
     <StrictMode>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <App toggleTheme={toggleTheme} />
+          <AuthContextWrapper>
+            <App toggleTheme={toggleTheme} />
+          </AuthContextWrapper>
         </ThemeProvider>
       </BrowserRouter>
     </StrictMode>
