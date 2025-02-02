@@ -19,11 +19,14 @@ import {
   Business,
   Call,
   DarkMode,
+  Dialpad,
   Home,
   LightMode,
   ListAlt,
+  LocalPhone,
   Logout,
   People,
+  Phone,
   Work,
 } from "@mui/icons-material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -115,11 +118,12 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
 
   const itemList = [
     { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
-    { text: "Jobs", icon: <Work />, onClick: () => navigate("/orders") },
+    { text: "Jobs", icon: <Work />, onClick: () => navigate("/jobs") },
+    { text: "Calls", icon: <Phone />, onClick: () => navigate("/calls") },
     {
-      text: "Calls",
-      icon: <Call />,
-      onClick: () => navigate("/calls"),
+      text: "Phone",
+      icon: <Dialpad />,
+      onClick: () => navigate("/phone"),
     },
     {
       text: "Technicians",

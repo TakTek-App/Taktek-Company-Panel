@@ -3,10 +3,13 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import PersistentDrawer from "./components/PersistentDrawer";
 import { Box } from "@mui/material";
-import Calls from "./pages/Calls";
 import { useAuth } from "./contexts/AuthContextWrapper";
 import Login from "./pages/Login";
 import Technicians from "./pages/Technicians";
+import Jobs from "./pages/Jobs";
+import Phone from "./pages/Phone";
+import Calls from "./pages/Calls";
+import Profile from "./pages/Profile";
 
 const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const drawerWidth = 240;
@@ -28,8 +31,11 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
           >
             <Routes>
               <Route path="/home" element={<Home />} />
-              <Route path="/calls" element={<Calls />} />
+              <Route path="/phone" element={<Phone />} />
               <Route path="/technicians" element={<Technicians />} />
+              <Route path="/calls" element={<Calls />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </Box>
         </>
