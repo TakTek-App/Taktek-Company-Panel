@@ -5,7 +5,7 @@ import React from "react";
 interface ContentWraperProps {
   name: string;
   buttonName?: string;
-  onBack: () => void;
+  onBack?: () => void;
   buttonFunction?: () => void;
   children: any;
 }
