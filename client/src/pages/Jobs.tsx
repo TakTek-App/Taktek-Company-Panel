@@ -12,7 +12,7 @@ const Jobs = () => {
 
   const getJobs = async () => {
     const data = await fetch(
-      `http://localhost:3000/companies/${company?.id}/jobs`
+      `https://admin-panel-pple.onrender.com/companies/${company?.id}/jobs`
     );
     const response = await data.json();
     setJobs(response);

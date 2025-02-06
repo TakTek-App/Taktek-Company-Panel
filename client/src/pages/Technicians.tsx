@@ -14,7 +14,7 @@ const Technicians = () => {
 
   const getTechnicians = async () => {
     const data = await fetch(
-      `http://localhost:3000/companies/${company?.id}/technicians`
+      `https://admin-panel-pple.onrender.com/companies/${company?.id}/technicians`
     );
     const response = await data.json();
     setTechnicians(response);

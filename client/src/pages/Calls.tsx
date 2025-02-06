@@ -11,7 +11,7 @@ const Calls = () => {
 
   const getCalls = async () => {
     const data = await fetch(
-      `http://localhost:3000/companies/${company?.id}/calls`
+      `https://admin-panel-pple.onrender.com/companies/${company?.id}/calls`
     );
     const response = await data.json();
     setCalls(response);

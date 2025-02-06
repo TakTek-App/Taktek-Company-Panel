@@ -1,8 +1,10 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import "../App.css";
 import { Field, Form, Formik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContextWrapper";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Login = () => {
   const fieldStyle = {
@@ -14,9 +16,48 @@ const Login = () => {
     borderRadius: "5px",
     outline: "none",
   };
+  const params = new URLSearchParams(window.location.search);
+  let company_created = params.get("company_created");
+  console.log(company_created);
 
   const { signedIn, setSignedIn, setCompany } = useAuth();
   const navigate = useNavigate();
+
+  const postCompany = async () => {
+    const companyData = localStorage.getItem("companyData") || "";
+    const parsedData = await JSON.parse(companyData);
+    console.log(parsedData.name);
+    const postObject = {
+      name: parsedData.name,
+      email: parsedData.email,
+      password: parsedData.password,
+      phone: parsedData.phone,
+      address: parsedData.address,
+      city: parsedData.city,
+      zipCode: parsedData.zipCode,
+      services: parsedData.services, // Asegúrate de que `services` sea un arreglo de IDs
+    };
+    console.log(postObject);
+    try {
+      const data = await axios.post(
+        "https://admin-panel-pple.onrender.com/companies",
+        postObject
+      );
+
+      if (data.status === 201) {
+        company_created = "false";
+        localStorage.removeItem("companyData");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (company_created === "true") {
+      postCompany();
+    }
+  }, []);
 
   return (
     <Box
@@ -84,7 +125,7 @@ const Login = () => {
                   console.log(values);
                   try {
                     const data = await fetch(
-                      "http://localhost:3000/companies/login",
+                      "https://admin-panel-pple.onrender.com/companies/login",
                       {
                         method: "POST",
                         body: JSON.stringify(values),

@@ -11,13 +11,15 @@ import Phone from "./pages/Phone";
 import Calls from "./pages/Calls";
 import Profile from "./pages/Profile";
 import SignUp from "./pages/SignUp";
+import Verification from "./pages/Verification";
 
 const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const drawerWidth = 240;
-  const { signedIn } = useAuth();
+  const { signedIn, company } = useAuth();
+  console.log(company?.verified);
   return (
     <Box>
-      {signedIn ? (
+      {signedIn && company?.verified ? (
         <>
           <PersistentDrawer toggleTheme={toggleTheme} />
           <Box
@@ -45,6 +47,11 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+        </Routes>
+      )}
+      {!company?.verified && (
+        <Routes>
+          <Route path="/verification" element={<Verification />} />
         </Routes>
       )}
     </Box>
