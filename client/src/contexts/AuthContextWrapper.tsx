@@ -18,6 +18,7 @@ interface Company {
   amountDue: number;
   services: Service[];
   technicians: any[];
+  verified: boolean;
 }
 
 interface Service {

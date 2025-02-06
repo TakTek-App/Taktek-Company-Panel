@@ -7,7 +7,9 @@ const useCompany = () => {
   const [jobs, setJobs] = useState();
 
   const getCompany = async () => {
-    const data = await fetch(`http://localhost:3000/companies/${company?.id}`);
+    const data = await fetch(
+      `https://admin-panel-pple.onrender.com/companies/${company?.id}`
+    );
     const response = await data.json();
 
     setTechnicians(response.technicians);

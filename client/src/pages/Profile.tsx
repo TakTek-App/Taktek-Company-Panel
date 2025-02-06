@@ -108,7 +108,7 @@ const Profile = () => {
           <Typography variant="h4">Services</Typography>
           <Box>
             {company?.services.map((service) => (
-              <List>
+              <List key={service.id}>
                 <ListItem disablePadding>
                   <ListItemIcon>
                     <Check />

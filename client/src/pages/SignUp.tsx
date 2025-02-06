@@ -27,6 +27,7 @@ const signUpSchema = Yup.object().shape({
   password: Yup.string()
     .min(8, "Password bust be 8+ characters long")
     .required("Must be at Least 8 Characters"),
+  phone: Yup.number().required("Phone is a Required Field"),
   address: Yup.string().required("Address is a Required Field"),
   city: Yup.string().required("City is a Required Field"),
   zipCode: Yup.number().required("Zip Code is a Required Field"),
@@ -36,7 +37,9 @@ const SignUp = () => {
   const [services, setServices] = useState<Services[]>([]);
   const getServices = async () => {
     try {
-      const data = await axios.get("http://localhost:3000/services");
+      const data = await axios.get(
+        "https://admin-panel-pple.onrender.com/services"
+      );
       setServices(data.data);
     } catch (error) {}
   };
@@ -79,6 +82,7 @@ const SignUp = () => {
               name: "",
               email: "",
               password: "",
+              phone: "",
               city: "",
               address: "",
               zipCode: "",
@@ -91,20 +95,25 @@ const SignUp = () => {
                 name: values.name,
                 email: values.email,
                 password: values.password,
+                phone: values.phone,
                 address: values.address,
                 city: values.city,
                 zipCode: values.zipCode,
                 services: values.services, // Asegúrate de que `services` sea un arreglo de IDs
               };
-              const data = await axios.post(
-                "http://localhost:3000/companies",
-                companyData
-              );
-              console.log(data);
-              if (data.status === 201) {
-                window.location.href =
-                  "https://buy.stripe.com/test_5kA6oy1wm2Hu11K288";
-              }
+
+              localStorage.setItem("companyData", JSON.stringify(companyData));
+              window.location.href =
+                "https://buy.stripe.com/test_5kA6oy1wm2Hu11K288";
+              // const data = await axios.post(
+              //   "https://admin-panel-pple.onrender.com/companies",
+              //   companyData
+              // );
+              // console.log(data);
+              // if (data.status === 201) {
+              //   window.location.href =
+              //     "https://buy.stripe.com/test_5kA6oy1wm2Hu11K288";
+              // }
             }}
           >
             {({ values, setFieldValue, isValid, errors, touched, dirty }) => {
@@ -164,6 +173,19 @@ const SignUp = () => {
                       }}
                     >
                       {errors.password}
+                    </div>
+                  ) : null}
+                  <Field name="phone" placeholder="Phone" />
+                  {errors.phone && touched.phone ? (
+                    <div
+                      style={{
+                        color: "#f16464",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        fontFamily: "Sans-serif",
+                      }}
+                    >
+                      {errors.phone}
                     </div>
                   ) : null}
                   <Field name="address" placeholder="Address" />
