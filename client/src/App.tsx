@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import PersistentDrawer from "./components/PersistentDrawer";
@@ -19,7 +18,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   console.log(company?.verified);
   return (
     <Box>
-      {signedIn && company?.verified ? (
+      {signedIn && !company?.verified ? (
         <>
           <PersistentDrawer toggleTheme={toggleTheme} />
           <Box
@@ -51,7 +50,12 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
       )}
       {!company?.verified && (
         <Routes>
-          <Route path="/verification" element={<Verification />} />
+          <Route
+            path="/verification"
+            element={
+              <Verification paramToConfirm={company?.driverLicenseExpDate} />
+            }
+          />
         </Routes>
       )}
     </Box>
