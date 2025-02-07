@@ -17,13 +17,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import {
   Business,
-  Call,
   DarkMode,
   Dialpad,
-  Home,
   LightMode,
-  ListAlt,
-  LocalPhone,
   Logout,
   People,
   Phone,
@@ -31,7 +27,6 @@ import {
 } from "@mui/icons-material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "../contexts/AuthContextWrapper";
 
 const drawerWidth = 240;

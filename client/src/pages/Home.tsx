@@ -1,4 +1,3 @@
-import React from "react";
 import ContentWraper from "../components/ContentWraper";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
