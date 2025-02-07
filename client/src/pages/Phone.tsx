@@ -3,20 +3,8 @@ import { io } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContextWrapper";
-
-interface Peer {
-  role: string;
-  firstName: string;
-  lastName: string;
-  socketId: string;
-  photo: string;
-  address: string;
-  location: { latitude: number; longitude: number } | null;
-}
 
 const Phone = () => {
-  const { company } = useAuth();
   const socket = io("https://signaling-server-yoj5.onrender.com");
   const socketPeer = {
     socketId: "santizapata",

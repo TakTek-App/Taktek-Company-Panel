@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ContentWraper from "../components/ContentWraper";
 import {
   Box,

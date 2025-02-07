@@ -183,7 +183,7 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
           }}
           onSubmit={handleSubmit}
         >
-          {({ setFieldValue, values, isSubmitting }) => (
+          {({ setFieldValue, isSubmitting }) => (
             <Form>
               <Box
                 sx={{
