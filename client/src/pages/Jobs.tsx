@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContextWrapper";
-import { Box, Typography } from "@mui/material";
 import ContentWraper from "../components/ContentWraper";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
