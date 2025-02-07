@@ -117,7 +117,7 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const theme = useTheme();
 
   const itemList = [
-    { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
+    // { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
     { text: "Jobs", icon: <Work />, onClick: () => navigate("/jobs") },
     { text: "Calls", icon: <Phone />, onClick: () => navigate("/calls") },
     {
@@ -180,9 +180,19 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
         }}
       >
         <DrawerHeader>
-          {/* <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? <ChevronLeft /> : <ChevronRight />}
-          </IconButton> */}
+          <Box sx={{ width: "250px", margin: "auto" }}>
+            {theme.palette.mode === "dark" ? (
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=9d15ea8c-084a-4999-b51a-b8711cdab59c"
+                width="100%"
+              />
+            ) : (
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
+                width="100%"
+              />
+            )}
+          </Box>
         </DrawerHeader>
         <Divider />
         <List>

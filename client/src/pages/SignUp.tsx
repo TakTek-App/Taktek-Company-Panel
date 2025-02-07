@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 import "./signup.css";
+import { Link } from "react-router-dom";
 
 interface Services {
   id: string;
@@ -49,11 +50,12 @@ const SignUp = () => {
 
   return (
     <Box className="signup-container">
-      <Box className="logo-container">
+      <Box className="logo-container" sx={{ width: "250px" }}>
         <img
           className="logo"
-          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Flogo.png?alt=media&token=6defccae-3a0c-4333-80a8-1c1ef024c917"
+          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=f575a59c-4a52-47a4-93cd-8b532727805a"
           alt=""
+          width="100%"
         />
       </Box>
 
@@ -273,6 +275,21 @@ const SignUp = () => {
                   >
                     Submit
                   </Button>
+                  <Box sx={{ textAlign: "center", color: "#000" }}>
+                    <Typography>Already have an account?</Typography>
+                    <Typography>
+                      Log In
+                      <span>
+                        <span> </span>
+                        <Link
+                          to="/login"
+                          style={{ color: "#88C124", textDecoration: "none" }}
+                        >
+                          Here
+                        </Link>
+                      </span>
+                    </Typography>
+                  </Box>
                 </Form>
               );
             }}
