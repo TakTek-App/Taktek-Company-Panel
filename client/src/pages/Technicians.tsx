@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import useCompany from "../hooks/useCompany";
-import { Box, Rating, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Rating } from "@mui/material";
 import ContentWraper from "../components/ContentWraper";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
