@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ContentWraper from "../components/ContentWraper";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useAuth } from "../contexts/AuthContextWrapper";
