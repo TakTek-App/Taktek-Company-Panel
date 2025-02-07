@@ -1,10 +1,10 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import "../App.css";
 import { Field, Form, Formik } from "formik";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContextWrapper";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const Login = () => {
   const fieldStyle = {
@@ -20,7 +20,7 @@ const Login = () => {
   let company_created = params.get("company_created");
   console.log(company_created);
 
-  const { signedIn, setSignedIn, setCompany } = useAuth();
+  const { setSignedIn, setCompany } = useAuth();
   const navigate = useNavigate();
 
   const postCompany = async () => {
