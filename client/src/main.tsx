@@ -6,6 +6,8 @@ import App from "./App";
 import { darkTheme, lightTheme } from "./customTheme";
 import { StrictMode, useState } from "react";
 import AuthContextWrapper from "./contexts/AuthContextWrapper";
+import { Elements } from "@stripe/react-stripe-js";
+import stripePromise from "./utils/stripe";
 
 const Root = () => {
   const [themeMode, setThemeMode] = useState(() => {
@@ -29,7 +31,9 @@ const Root = () => {
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <AuthContextWrapper>
-            <App toggleTheme={toggleTheme} />
+            <Elements stripe={stripePromise}>
+              <App toggleTheme={toggleTheme} />
+            </Elements>
           </AuthContextWrapper>
         </ThemeProvider>
       </BrowserRouter>

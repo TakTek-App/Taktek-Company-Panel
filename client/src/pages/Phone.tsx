@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Phone = () => {
@@ -12,7 +12,7 @@ const Phone = () => {
   const navigate = useNavigate();
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [isCalling, setIsCalling] = useState(false);
+  // const [isCalling, setIsCalling] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [incomingCall, setIncomingCall] = useState<{ sender: string } | null>(
     null
@@ -242,18 +242,18 @@ const Phone = () => {
     console.log("Call ended.");
   };
 
-  const cancelCall = () => {
-    if (isCalling && targetPeer) {
-      socket?.emit("call-cancelled", { target: targetPeer });
-      console.log(`Call cancelled to ${targetPeer}`);
-      resetCallState();
-    }
-  };
+  // const cancelCall = () => {
+  //   if (isCalling && targetPeer) {
+  //     socket?.emit("call-cancelled", { target: targetPeer });
+  //     console.log(`Call cancelled to ${targetPeer}`);
+  //     resetCallState();
+  //   }
+  // };
 
   // Reset call state
   const resetCallState = () => {
     setIncomingCall(null);
-    setIsCalling(false);
+    // setIsCalling(false);
     setInCall(false);
     setTargetPeer(null);
     peerConnectionRef.current = null;
@@ -261,7 +261,7 @@ const Phone = () => {
   };
 
   return (
-    <ContentWraper onBack={() => navigate(-1)} name="Calls">
+    <ContentWraper onBack={() => navigate(-1)} name="Phone">
       <div style={{ padding: 20 }}>
         {incomingCall && (
           <Box
@@ -269,8 +269,8 @@ const Phone = () => {
               display: "flex",
               flexDirection: "column",
               borderRadius: "10px",
-              width: 300,
-              height: 600,
+              width: 250,
+              height: 500,
               backgroundColor: "#fff",
               color: "#000",
               padding: "20px",
@@ -280,13 +280,22 @@ const Phone = () => {
               border: "10px solid black",
             }}
           >
-            <p>Incoming call from: {incomingCall.sender}</p>
-            <img src={callerData?.photo} alt="" width="300px" />
-            <Typography>You should see the incoming calls here</Typography>
+            <p>Incoming call</p>
+            <img
+              src={callerData?.photo}
+              alt=""
+              width="90%"
+              style={{
+                margin: "auto",
+              }}
+            />
             <Typography>{callerData?.firstName}</Typography>
-            <Typography>{incomingCall?.sender}</Typography>
-            <button onClick={acceptCall}>Accept</button>
-            <button onClick={rejectCall}>Reject</button>
+            <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
+              Accept
+            </Button>
+            <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
+              Reject
+            </Button>
           </Box>
         )}
         {!incomingCall && (
@@ -296,8 +305,8 @@ const Phone = () => {
               display: "flex",
               flexDirection: "column",
               borderRadius: "10px",
-              width: 300,
-              height: 600,
+              width: 250,
+              height: 500,
               backgroundColor: "#fff",
               color: "#000",
               padding: "20px",
@@ -313,15 +322,38 @@ const Phone = () => {
             <Typography>You should see the incoming calls here</Typography>
           </Box>
         )}
-        {targetPeer && !inCall && !incomingCall && (
-          <p>Calling Peer: {targetPeer}</p>
+        {inCall && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "10px",
+              width: 250,
+              height: 500,
+              backgroundColor: "#fff",
+              color: "#000",
+              padding: "20px",
+              gap: "20px",
+              justifyContent: "center",
+              textAlign: "center",
+              border: "10px solid black",
+            }}
+          >
+            <p>In Call With</p>
+            <img
+              src={callerData?.photo}
+              alt=""
+              width="90%"
+              style={{
+                margin: "auto",
+              }}
+            />
+            <Typography>{callerData?.firstName}</Typography>
+            <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
+              End Call
+            </Button>
+          </Box>
         )}
-        {inCall && <p>In Call with: {targetPeer || incomingCall?.sender}</p>}
-        {isCalling && !inCall && (
-          <button onClick={cancelCall}>Cancel Call</button>
-        )}
-        {inCall && <button onClick={endCall}>End Call</button>}
-
         {remoteStream && (
           <audio
             autoPlay
