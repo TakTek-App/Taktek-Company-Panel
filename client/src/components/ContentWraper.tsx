@@ -7,6 +7,7 @@ interface ContentWraperProps {
   buttonName?: string;
   onBack?: () => void;
   buttonFunction?: () => void;
+  renderComponent?: any;
   children: any;
 }
 
@@ -15,6 +16,7 @@ const ContentWraper: React.FC<ContentWraperProps> = ({
   buttonName,
   onBack,
   buttonFunction,
+  renderComponent,
   children,
 }) => {
   return (
@@ -39,6 +41,7 @@ const ContentWraper: React.FC<ContentWraperProps> = ({
             {buttonName}
           </Button>
         )}
+        {renderComponent && <>{renderComponent}</>}
       </Box>
       {/* You can access props here if needed */}
       <Box sx={{ padding: 5 }}>{children}</Box>

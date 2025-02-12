@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Elements } from "@stripe/react-stripe-js";
 import ContentWraper from "../components/ContentWraper";
 import {
   Box,
@@ -13,11 +14,13 @@ import {
 } from "@mui/material";
 import { useAuth } from "../contexts/AuthContextWrapper";
 import { Check } from "@mui/icons-material";
+import SaveCard from "../components/SaveCard";
+import stripePromise from "../utils/stripe";
 
 const Profile = () => {
   const { company } = useAuth();
-  console.log(company);
   const [copied, setCopied] = useState(false);
+  const customerId = localStorage.getItem("customerId");
 
   const handleCopy = () => {
     if (company?.id) {
@@ -28,16 +31,13 @@ const Profile = () => {
       }, 1000);
     }
   };
+
   return (
     <ContentWraper name="Profile">
       <Grid2 container spacing={2}>
         <Grid2
           size={6}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
+          sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
         >
           <TextField type="text" value={company?.name} label="Name" disabled />
           <TextField
@@ -67,11 +67,7 @@ const Profile = () => {
         </Grid2>
         <Grid2
           size={6}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
+          sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
         >
           <Box sx={{ display: "flex", gap: "20px", alignItems: "center" }}>
             <TextField
@@ -96,7 +92,7 @@ const Profile = () => {
             label="Address"
             disabled
           />
-          <TextField type="text" value={company?.city} label="City" disabled />{" "}
+          <TextField type="text" value={company?.city} label="City" disabled />
           <TextField
             type="text"
             value={company?.insurance}
@@ -104,6 +100,16 @@ const Profile = () => {
             disabled
           />
         </Grid2>
+        {!customerId && (
+          <Grid2 size={12} sx={{ mt: 2 }}>
+            <Typography variant="h5" sx={{ mb: 5 }}>
+              Save Payment Method
+            </Typography>
+            <Elements stripe={stripePromise}>
+              <SaveCard />
+            </Elements>
+          </Grid2>
+        )}
         <Grid2 size={12} sx={{ mt: 5 }}>
           <Typography variant="h4">Services</Typography>
           <Box>

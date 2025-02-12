@@ -138,13 +138,10 @@ const Login = () => {
         sx={{
           gridArea: "logo",
           width: "250px",
-          // display: "flex",
-          // justifyContent: "center",
-          // alignItems: "center",
         }}
       >
         <img
-          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=f575a59c-4a52-47a4-93cd-8b532727805a"
+          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
           alt="logo"
           width="100%"
         />
