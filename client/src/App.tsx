@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import PersistentDrawer from "./components/PersistentDrawer";
 import { Box } from "@mui/material";
 import { useAuth } from "./contexts/AuthContextWrapper";
@@ -32,7 +32,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
             }}
           >
             <Routes>
-              <Route path="/home" element={<Home />} />
+              {/* <Route path="/home" element={<Home />} /> */}
               <Route path="/phone" element={<Phone />} />
               <Route path="/technicians" element={<Technicians />} />
               <Route path="/calls" element={<Calls />} />

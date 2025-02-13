@@ -37,11 +37,14 @@ const SaveCard = () => {
 
     if (error) return console.error(error.message);
 
-    const response = await fetch("http://localhost:3001/save-card", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, paymentMethodId: paymentMethod.id }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_ENDPOINT}save-card`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, paymentMethodId: paymentMethod.id }),
+      }
+    );
 
     const data = await response.json();
 
