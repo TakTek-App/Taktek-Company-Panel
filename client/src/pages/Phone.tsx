@@ -3,16 +3,19 @@ import { io } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContextWrapper";
 
 const Phone = () => {
-  const socket = io("https://signaling-server-yoj5.onrender.com");
+  const { company } = useAuth();
+  const socket = io("https://taktek-app-1.onrender.com");
   const socketPeer = {
-    socketId: "santizapata",
+    socketId: company?.id,
+    role: "company",
   };
+  console.log(company?.id);
   const navigate = useNavigate();
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  // const [isCalling, setIsCalling] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [incomingCall, setIncomingCall] = useState<{ sender: string } | null>(
     null
@@ -249,7 +252,18 @@ const Phone = () => {
   //     resetCallState();
   //   }
   // };
-
+  const createJob = ({
+    technicianId,
+    clientId,
+  }: {
+    technicianId: string;
+    clientId: string;
+  }) => {
+    socket.emit("hire", {
+      technicianId: technicianId,
+      clientId: clientId,
+    });
+  };
   // Reset call state
   const resetCallState = () => {
     setIncomingCall(null);
@@ -262,98 +276,132 @@ const Phone = () => {
 
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Phone">
-      <div style={{ padding: 20 }}>
-        {incomingCall && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              border: "10px solid black",
-            }}
-          >
-            <p>Incoming call</p>
-            <img
-              src={callerData?.photo}
-              alt=""
-              width="90%"
-              style={{
-                margin: "auto",
+      <div
+        style={{
+          padding: 20,
+          display: "grid",
+          gridTemplateAreas: `
+        "column1 column2"
+        `,
+          gridTemplateRows: "repeat(3,1fr)",
+        }}
+      >
+        <Box
+          sx={{
+            gridArea: "column1",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {incomingCall && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "10px solid black",
               }}
-            />
-            <Typography>{callerData?.firstName}</Typography>
-            <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
-              Accept
-            </Button>
-            <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
-              Reject
-            </Button>
-          </Box>
-        )}
-        {!incomingCall && (
-          <Box
-            sx={{
-              margin: "50px 0px",
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              borderTop: "20px solid black",
-              borderBottom: "40px solid black",
-              borderRight: "10px solid black",
-              borderLeft: "10px solid black",
-            }}
-          >
-            <Typography>You should see the incoming calls here</Typography>
-          </Box>
-        )}
-        {inCall && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              border: "10px solid black",
-            }}
-          >
-            <p>In Call With</p>
-            <img
-              src={callerData?.photo}
-              alt=""
-              width="90%"
-              style={{
-                margin: "auto",
+            >
+              <p>Incoming call</p>
+              <img
+                src={callerData?.photo}
+                alt=""
+                width="90%"
+                style={{
+                  margin: "auto",
+                }}
+              />
+              <Typography>{callerData?.firstName}</Typography>
+              <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
+                Accept
+              </Button>
+              <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
+                Reject
+              </Button>
+            </Box>
+          )}
+          {!incomingCall && (
+            <Box
+              sx={{
+                margin: "50px 0px",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                borderTop: "20px solid black",
+                borderBottom: "40px solid black",
+                borderRight: "10px solid black",
+                borderLeft: "10px solid black",
               }}
-            />
-            <Typography>{callerData?.firstName}</Typography>
-            <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
-              End Call
-            </Button>
-          </Box>
-        )}
+            >
+              <Typography>You should see the incoming calls here</Typography>
+            </Box>
+          )}
+          {inCall && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "10px solid black",
+              }}
+            >
+              <p>In Call With</p>
+              <img
+                src={callerData?.photo}
+                alt=""
+                width="90%"
+                style={{
+                  margin: "auto",
+                }}
+              />
+              <Typography>{callerData?.firstName}</Typography>
+              <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
+                End Call
+              </Button>
+            </Box>
+          )}
+        </Box>
+        <Box
+          sx={{
+            gridArea: "column2",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <select name="" id="">
+            <option value="select_option">Select A Technician</option>
+          </select>
+
+          <Button onClick={() => createJob}>Create Job</Button>
+        </Box>
         {remoteStream && (
           <audio
             autoPlay
