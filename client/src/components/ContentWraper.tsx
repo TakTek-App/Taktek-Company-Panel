@@ -7,6 +7,7 @@ interface ContentWraperProps {
   buttonName?: string;
   onBack?: () => void;
   buttonFunction?: () => void;
+  renderComponent?: any;
   children: any;
 }
 
@@ -15,16 +16,18 @@ const ContentWraper: React.FC<ContentWraperProps> = ({
   buttonName,
   onBack,
   buttonFunction,
+  renderComponent,
   children,
 }) => {
   return (
     <Paper
       elevation={3}
       sx={{
-        padding: 4,
-        width: `calc(100% - 240px)`,
-        marginLeft: "240px",
-        marginTop: "120px",
+        padding: { xs: "20px 0", sm: 4 },
+        width: { xs: "90%", sm: `calc(100% - 240px)` },
+        marginLeft: { xs: 0, sm: "240px" },
+        marginTop: { xs: "100px", sm: "120px" },
+        marginBottom: { xs: "100px", sm: "120px" },
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -39,6 +42,7 @@ const ContentWraper: React.FC<ContentWraperProps> = ({
             {buttonName}
           </Button>
         )}
+        {renderComponent && <>{renderComponent}</>}
       </Box>
       {/* You can access props here if needed */}
       <Box sx={{ padding: 5 }}>{children}</Box>

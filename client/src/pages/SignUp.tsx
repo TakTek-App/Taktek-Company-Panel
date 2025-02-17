@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   InputLabel,
+  ListSubheader,
   MenuItem,
   Select,
   Typography,
@@ -10,16 +11,18 @@ import {
 
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 import "./signup.css";
 import { Link } from "react-router-dom";
 
-interface Services {
-  id: string;
+interface Service {
+  id: string | number;
   name: string;
+  categoryId: number;
 }
+
 const signUpSchema = Yup.object().shape({
   name: Yup.string().required("Name is a Required Field"),
   email: Yup.string()
@@ -35,7 +38,7 @@ const signUpSchema = Yup.object().shape({
 });
 
 const SignUp = () => {
-  const [services, setServices] = useState<Services[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const getServices = async () => {
     try {
       const data = await axios.get(
@@ -53,7 +56,7 @@ const SignUp = () => {
       <Box className="logo-container" sx={{ width: "250px" }}>
         <img
           className="logo"
-          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=f575a59c-4a52-47a4-93cd-8b532727805a"
+          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
           alt=""
           width="100%"
         />
@@ -246,11 +249,13 @@ const SignUp = () => {
                       multiple
                       value={values.services}
                       onChange={(e) => {
-                        const selectedValues = e.target.value;
+                        const selectedValues = Array.isArray(e.target.value)
+                          ? e.target.value
+                          : [];
                         setFieldValue("services", selectedValues);
                       }}
                       renderValue={(selected) =>
-                        selected
+                        (selected as string[])
                           .map(
                             (id) =>
                               services.find((service) => service.id === id)
@@ -258,13 +263,27 @@ const SignUp = () => {
                           )
                           .join(", ")
                       }
-                      label="Select Services"
                       style={{ backgroundColor: "white" }}
                     >
-                      {services.map((service) => (
-                        <MenuItem key={service.id} value={service.id}>
-                          {service.name}
-                        </MenuItem>
+                      {[1, 2, 3].map((categoryId) => (
+                        <React.Fragment key={categoryId}>
+                          <ListSubheader>
+                            {categoryId === 1
+                              ? "Car Services"
+                              : categoryId === 2
+                              ? "Home Services"
+                              : "Business Services"}
+                          </ListSubheader>
+                          {services
+                            .filter(
+                              (service) => service.categoryId === categoryId
+                            )
+                            .map((service) => (
+                              <MenuItem key={service.id} value={service.id}>
+                                {service.name}
+                              </MenuItem>
+                            ))}
+                        </React.Fragment>
                       ))}
                     </Select>
                   </FormControl>
