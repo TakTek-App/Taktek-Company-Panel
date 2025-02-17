@@ -36,7 +36,7 @@ const Profile = () => {
     <ContentWraper name="Profile">
       <Grid2 container spacing={2}>
         <Grid2
-          size={6}
+          size={{ xs: 12, sm: 6 }}
           sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
         >
           <TextField type="text" value={company?.name} label="Name" disabled />
@@ -66,7 +66,7 @@ const Profile = () => {
           />
         </Grid2>
         <Grid2
-          size={6}
+          size={{ xs: 12, sm: 6 }}
           sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
         >
           <Box sx={{ display: "flex", gap: "20px", alignItems: "center" }}>

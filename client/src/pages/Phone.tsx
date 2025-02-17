@@ -5,7 +5,14 @@ import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Phone = () => {
+<<<<<<< Updated upstream
   const socket = io("https://signaling-server-yoj5.onrender.com");
+=======
+  const { company } = useAuth();
+  const socket = io("https://taktek-app-1.onrender.com", {
+    transports: ["websocket"],
+  });
+>>>>>>> Stashed changes
   const socketPeer = {
     socketId: "santizapata",
   };
@@ -214,19 +221,19 @@ const Phone = () => {
     await peerConnection.setLocalDescription(answer);
 
     // Send answer to the caller
-    socket.emit("answer", { target: incomingCall.sender, answer });
+    socket.emit("answer", { target: incomingCall?.sender, answer });
 
-    setTargetPeer(incomingCall.sender); // Set target peer on the callee side
+    setTargetPeer(incomingCall?.sender); // Set target peer on the callee side
     setIncomingCall(null);
     setInCall(true);
-    console.log(`Call accepted with ${incomingCall.sender}`);
+    console.log(`Call accepted with ${incomingCall?.sender}`);
   };
 
   // Reject a call
   const rejectCall = () => {
     if (incomingCall) {
-      socket.emit("call-rejected", { target: incomingCall.sender });
-      console.log(`Call rejected from ${incomingCall.sender}`);
+      socket.emit("call-rejected", { target: incomingCall?.sender });
+      console.log(`Call rejected from ${incomingCall?.sender}`);
       setIncomingCall(null); // Clear incoming call state
     }
   };
@@ -238,7 +245,7 @@ const Phone = () => {
     }
 
     resetCallState();
-    socket.emit("call-ended", { target: targetPeer }); // Notify the other peer
+    socket.emit("call-ended", { target: targetPeer || incomingCall?.sender }); // Notify the other peer
     console.log("Call ended.");
   };
 
@@ -262,6 +269,7 @@ const Phone = () => {
 
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Phone">
+<<<<<<< Updated upstream
       <div style={{ padding: 20 }}>
         {incomingCall && (
           <Box
@@ -354,6 +362,140 @@ const Phone = () => {
             </Button>
           </Box>
         )}
+=======
+      <Box
+        sx={{
+          padding: { xs: 0, sm: 20 },
+          display: { xs: "flex", sm: "grid" },
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: { xs: "center", sm: "space-evenly" },
+          alignItems: "center",
+          gridTemplateAreas: `
+        "column1 column2"
+        `,
+          gridTemplateRows: "repeat(3,1fr)",
+        }}
+      >
+        <Box
+          sx={{
+            gridArea: "column1",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {incomingCall && !inCall && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "10px solid black",
+                marginBottom: "50px",
+              }}
+            >
+              <p>Incoming call</p>
+              <img
+                src={callerData?.photo}
+                alt=""
+                width="90%"
+                style={{
+                  margin: "auto",
+                }}
+              />
+              <Typography>{callerData?.firstName}</Typography>
+              <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
+                Accept
+              </Button>
+              <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
+                Reject
+              </Button>
+            </Box>
+          )}
+          {!incomingCall && !inCall && (
+            <Box
+              sx={{
+                margin: "50px 0px",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                borderTop: "20px solid black",
+                borderBottom: "40px solid black",
+                borderRight: "10px solid black",
+                borderLeft: "10px solid black",
+              }}
+            >
+              <Typography>You should see the incoming calls here</Typography>
+            </Box>
+          )}
+          {inCall && !incomingCall && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "10px solid black",
+                marginBottom: "50px",
+              }}
+            >
+              <p>In Call With</p>
+              <img
+                src={callerData?.photo}
+                alt=""
+                width="90%"
+                style={{
+                  margin: "auto",
+                }}
+              />
+              <Typography>{callerData?.firstName}</Typography>
+              <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
+                End Call
+              </Button>
+            </Box>
+          )}
+        </Box>
+        <Box
+          sx={{
+            gridArea: "column2",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <select name="" id="">
+            <option value="select_option">Select A Technician</option>
+          </select>
+
+          <Button onClick={() => createJob}>Create Job</Button>
+        </Box>
+>>>>>>> Stashed changes
         {remoteStream && (
           <audio
             autoPlay
@@ -362,7 +504,7 @@ const Phone = () => {
             }}
           />
         )}
-      </div>
+      </Box>
     </ContentWraper>
   );
 };

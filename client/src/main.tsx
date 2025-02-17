@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import App from "./App";
 import { darkTheme, lightTheme } from "./customTheme";
-import { StrictMode, useState } from "react";
+import { useState } from "react";
 import AuthContextWrapper from "./contexts/AuthContextWrapper";
 import { Elements } from "@stripe/react-stripe-js";
 import stripePromise from "./utils/stripe";
@@ -27,17 +27,15 @@ const Root = () => {
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
   return (
-    <StrictMode>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <AuthContextWrapper>
-            <Elements stripe={stripePromise}>
-              <App toggleTheme={toggleTheme} />
-            </Elements>
-          </AuthContextWrapper>
-        </ThemeProvider>
-      </BrowserRouter>
-    </StrictMode>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <AuthContextWrapper>
+          <Elements stripe={stripePromise}>
+            <App toggleTheme={toggleTheme} />
+          </Elements>
+        </AuthContextWrapper>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 };
 
