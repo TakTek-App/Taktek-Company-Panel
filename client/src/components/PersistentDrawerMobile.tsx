@@ -17,6 +17,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import {
   Business,
+  ChevronLeft,
+  ChevronRight,
   DarkMode,
   Dialpad,
   LightMode,
@@ -90,19 +92,23 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
+const PersistentDrawerMobile = ({
+  toggleTheme,
+}: {
+  toggleTheme: () => void;
+}) => {
   const navigate = useNavigate();
   const { setSignedIn } = useAuth();
   // const theme = useTheme();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
-  // const handleDrawerClose = () => {
-  //   setOpen(false);
-  // };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   const logout = () => {
     setSignedIn(false);
@@ -113,22 +119,45 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
 
   const itemList = [
     // { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
-    { text: "Jobs", icon: <Work />, onClick: () => navigate("/jobs") },
-    { text: "Calls", icon: <Phone />, onClick: () => navigate("/calls") },
+    {
+      text: "Jobs",
+      icon: <Work />,
+      onClick: () => {
+        navigate("/jobs");
+        setOpen(false);
+      },
+    },
+    {
+      text: "Calls",
+      icon: <Phone />,
+      onClick: () => {
+        navigate("/calls");
+        setOpen(false);
+      },
+    },
     {
       text: "Phone",
       icon: <Dialpad />,
-      onClick: () => navigate("/phone"),
+      onClick: () => {
+        navigate("/phone");
+        setOpen(false);
+      },
     },
     {
       text: "Technicians",
       icon: <People />,
-      onClick: () => navigate("/technicians"),
+      onClick: () => {
+        navigate("/technicians");
+        setOpen(false);
+      },
     },
     {
       text: "Profile",
       icon: <Business />,
-      onClick: () => navigate("/profile"),
+      onClick: () => {
+        navigate("/profile");
+        setOpen(false);
+      },
     },
     {
       text: "Logout",
@@ -138,7 +167,10 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
     {
       text: theme.palette.mode === "dark" ? "Light Mode" : "Dark Mode",
       icon: theme.palette.mode === "dark" ? <LightMode /> : <DarkMode />,
-      onClick: () => toggleTheme(),
+      onClick: () => {
+        toggleTheme();
+        setOpen(false);
+      },
     },
   ];
   return (
@@ -163,7 +195,7 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
         </Toolbar>
       </AppBar>
       <Drawer
-        variant="permanent"
+        variant="persistent"
         anchor="left"
         open={open}
         sx={{
@@ -189,6 +221,9 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
               />
             )}
           </Box>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "ltr" ? <ChevronLeft /> : <ChevronRight />}
+          </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
@@ -210,4 +245,4 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
   );
 };
 
-export default PersistentDrawer;
+export default PersistentDrawerMobile;

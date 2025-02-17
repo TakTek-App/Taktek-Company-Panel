@@ -3,11 +3,13 @@ import ContentWraper from "../components/ContentWraper";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useAuth } from "../contexts/AuthContextWrapper";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@mui/material";
 
 const Calls = () => {
   const { company } = useAuth();
   const navigate = useNavigate();
   const [calls, setCalls] = useState([]);
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const getCalls = async () => {
     const data = await fetch(
@@ -95,9 +97,39 @@ const Calls = () => {
     },
   ];
 
+  const columnsMobile: GridColDef[] = [
+    { field: "id", headerName: "Call Id", flex: 1 },
+    {
+      field: "date",
+      headerName: "Date",
+      valueFormatter: (value) =>
+        new Date(value).toLocaleString("en-us", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        }),
+      minWidth: 180,
+    },
+    {
+      field: "user.firstName",
+      headerName: "User Name",
+      minWidth: 120,
+      valueGetter: (_, row) => row.user.firstName,
+    },
+    {
+      field: "technician.firstName",
+      headerName: "Technician Name",
+      minWidth: 150,
+      valueGetter: (_, row) => row.technician.firstName,
+    },
+  ];
+
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Calls">
-      <DataGrid columns={columns} rows={calls} />
+      <DataGrid columns={isMobile ? columnsMobile : columns} rows={calls} />
     </ContentWraper>
   );
 };
