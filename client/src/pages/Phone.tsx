@@ -3,18 +3,16 @@ import { io } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContextWrapper";
 
 const Phone = () => {
-<<<<<<< Updated upstream
-  const socket = io("https://signaling-server-yoj5.onrender.com");
-=======
   const { company } = useAuth();
   const socket = io("https://taktek-app-1.onrender.com", {
     transports: ["websocket"],
   });
->>>>>>> Stashed changes
   const socketPeer = {
-    socketId: "santizapata",
+    socketId: company?.id,
+    role: "company",
   };
   const navigate = useNavigate();
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -267,102 +265,21 @@ const Phone = () => {
     setRemoteStream(null); // Clear remote stream
   };
 
+  const createJob = ({
+    technicianId,
+    userId,
+  }: {
+    technicianId: string;
+    userId: string;
+  }) => {
+    socket.emit("hire", {
+      technicianId: technicianId,
+      userId: userId,
+    });
+  };
+
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Phone">
-<<<<<<< Updated upstream
-      <div style={{ padding: 20 }}>
-        {incomingCall && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              border: "10px solid black",
-            }}
-          >
-            <p>Incoming call</p>
-            <img
-              src={callerData?.photo}
-              alt=""
-              width="90%"
-              style={{
-                margin: "auto",
-              }}
-            />
-            <Typography>{callerData?.firstName}</Typography>
-            <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
-              Accept
-            </Button>
-            <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
-              Reject
-            </Button>
-          </Box>
-        )}
-        {!incomingCall && (
-          <Box
-            sx={{
-              margin: "50px 0px",
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              borderTop: "20px solid black",
-              borderBottom: "40px solid black",
-              borderRight: "10px solid black",
-              borderLeft: "10px solid black",
-            }}
-          >
-            <Typography>You should see the incoming calls here</Typography>
-          </Box>
-        )}
-        {inCall && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              border: "10px solid black",
-            }}
-          >
-            <p>In Call With</p>
-            <img
-              src={callerData?.photo}
-              alt=""
-              width="90%"
-              style={{
-                margin: "auto",
-              }}
-            />
-            <Typography>{callerData?.firstName}</Typography>
-            <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
-              End Call
-            </Button>
-          </Box>
-        )}
-=======
       <Box
         sx={{
           padding: { xs: 0, sm: 20 },
@@ -495,7 +412,6 @@ const Phone = () => {
 
           <Button onClick={() => createJob}>Create Job</Button>
         </Box>
->>>>>>> Stashed changes
         {remoteStream && (
           <audio
             autoPlay
