@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +7,14 @@ import { useAuth } from "../contexts/AuthContextWrapper";
 
 const Phone = () => {
   const { company } = useAuth();
-  const socket = io("https://taktek-app-1.onrender.com", {
-    transports: ["websocket"],
-  });
+  // const socket = io("https://taktek-app-1.onrender.com", {
+  //   transports: ["websocket"],
+  //   reconnectionAttempts: 5,
+  //   reconnectionDelay: 3000,
+  // });
   const socketPeer = {
-    socketId: company?.id,
     role: "company",
+    socketId: company?.id,
   };
   const navigate = useNavigate();
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -26,37 +28,40 @@ const Phone = () => {
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const [targetPeer, setTargetPeer] = useState<string | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
+  const socketRef = useRef<Socket | null>(null);
+
+  console.log(socketRef.current);
 
   useEffect(() => {
-    socket.emit("register", socketPeer);
-    console.log("Registered as technician:", socketPeer.socketId);
+    // socket.emit("register", socketPeer);
+    // console.log("Registered as technician:", socketPeer.socketId);
 
-    // Listen for incoming signaling messages
-    socket.on("offer", ({ offer, sender, senderData }) => {
-      console.log(`Incoming offer from ${sender} with data:`, senderData);
-      setIncomingCall({ sender });
-      setCallerData(senderData);
-      handleOffer(offer, sender);
-    });
+    // // Listen for incoming signaling messages
+    // socket.on("offer", ({ offer, sender, senderData }) => {
+    //   console.log(`Incoming offer from ${sender} with data:`, senderData);
+    //   setIncomingCall({ sender });
+    //   setCallerData(senderData);
+    //   handleOffer(offer, sender);
+    // });
 
-    socket.on("answer", handleAnswer);
-    socket.on("ice-candidate", handleIceCandidate);
-    socket.on("call-rejected", () => {
-      resetCallState(); // Reset state when the call is rejected
-      alert("Call was rejected.");
-      console.log("Call rejected.");
-    });
+    // socket.on("answer", handleAnswer);
+    // socket.on("ice-candidate", handleIceCandidate);
+    // socket.on("call-rejected", () => {
+    //   resetCallState(); // Reset state when the call is rejected
+    //   alert("Call was rejected.");
+    //   console.log("Call rejected.");
+    // });
 
-    socket.on("call-ended", () => {
-      resetCallState();
-      alert("The other peer has ended the call.");
-      console.log("Call ended.");
-    });
+    // socket.on("call-ended", () => {
+    //   resetCallState();
+    //   alert("The other peer has ended the call.");
+    //   console.log("Call ended.");
+    // });
 
-    socket?.on("call-cancelled", () => {
-      resetCallState();
-      console.log(`Call cancelled`);
-    });
+    // socket?.on("call-cancelled", () => {
+    //   resetCallState();
+    //   console.log(`Call cancelled`);
+    // });
 
     // Request media stream (audio only)
     const getUserMedia = async () => {
@@ -75,12 +80,52 @@ const Phone = () => {
 
     getUserMedia();
 
+    // return () => {
+    //   socket.off("offer");
+    //   socket.off("answer");
+    //   socket.off("ice-candidate");
+    //   socket.off("call-rejected");
+    //   socket.off("call-ended");
+    // };
+  }, []);
+  useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io("http://192.168.2.11:3002", {
+        transports: ["websocket"],
+        reconnectionAttempts: 5,
+        reconnectionDelay: 3000,
+      });
+
+      socketRef.current.emit("register", socketPeer);
+      console.log("Registered as technician:", socketPeer.socketId);
+
+      socketRef.current.on("offer", ({ offer, sender, senderData }) => {
+        console.log(`Incoming offer from ${sender} with data:`, senderData);
+        setIncomingCall({ sender });
+        setCallerData(senderData);
+        handleOffer(offer, sender);
+      });
+
+      socketRef.current.on("answer", handleAnswer);
+      socketRef.current.on("ice-candidate", handleIceCandidate);
+      socketRef.current.on("call-rejected", () => {
+        resetCallState();
+        alert("Call was rejected.");
+      });
+
+      socketRef.current.on("call-ended", () => {
+        resetCallState();
+        alert("The other peer has ended the call.");
+      });
+
+      socketRef.current.on("call-cancelled", () => {
+        resetCallState();
+        console.log(`Call cancelled`);
+      });
+    }
+
     return () => {
-      socket.off("offer");
-      socket.off("answer");
-      socket.off("ice-candidate");
-      socket.off("call-rejected");
-      socket.off("call-ended");
+      socketRef.current?.disconnect();
     };
   }, []);
 
@@ -167,7 +212,7 @@ const Phone = () => {
 
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        socket.emit("ice-candidate", {
+        socketRef.current?.emit("ice-candidate", {
           target: targetPeer,
           candidate: event.candidate,
         });
@@ -178,48 +223,29 @@ const Phone = () => {
     return peerConnection;
   };
 
-  // Start a call
-  // const startCall = async () => {
-  //   if (!localStream || !targetPeer) return;
-
-  //   const peerConnection = createPeerConnection(targetPeer);
-
-  //   // Add local tracks to the peer connection
-  //   localStream
-  //     .getTracks()
-  //     .forEach((track) => peerConnection.addTrack(track, localStream));
-
-  //   try {
-  //     const offer = await peerConnection.createOffer();
-  //     await peerConnection.setLocalDescription(offer);
-
-  //     // Send the offer to the target peer
-  //     socket.emit("offer", { target: targetPeer, offer });
-  //     peerConnectionRef.current = peerConnection;
-
-  //     setIsCalling(true);
-  //     console.log(`Calling peer: ${targetPeer}`);
-  //   } catch (error) {
-  //     console.error("Error creating or setting offer:", error);
-  //   }
-  // };
-
   // Accept a call
   const acceptCall = async () => {
     if (!incomingCall || !localStream) return;
+
+    console.log("socket.id", socketRef.current?.id);
 
     const peerConnection = peerConnectionRef.current!;
 
     // Add local tracks before creating an answer
     localStream
       .getTracks()
-      .forEach((track) => peerConnection.addTrack(track, localStream));
+      .forEach((track) => peerConnection?.addTrack(track, localStream));
 
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
+    const answer = await peerConnection?.createAnswer();
+    await peerConnection?.setLocalDescription(answer);
 
     // Send answer to the caller
-    socket.emit("answer", { target: incomingCall?.sender, answer });
+    if (incomingCall?.sender) {
+      socketRef.current?.emit("answer", {
+        target: incomingCall?.sender,
+        answer,
+      });
+    }
 
     setTargetPeer(incomingCall?.sender); // Set target peer on the callee side
     setIncomingCall(null);
@@ -230,7 +256,9 @@ const Phone = () => {
   // Reject a call
   const rejectCall = () => {
     if (incomingCall) {
-      socket.emit("call-rejected", { target: incomingCall?.sender });
+      socketRef.current?.emit("call-rejected", {
+        target: incomingCall?.sender,
+      });
       console.log(`Call rejected from ${incomingCall?.sender}`);
       setIncomingCall(null); // Clear incoming call state
     }
@@ -241,10 +269,10 @@ const Phone = () => {
     if (peerConnectionRef.current) {
       peerConnectionRef.current.close();
     }
-
-    resetCallState();
-    socket.emit("call-ended", { target: targetPeer || incomingCall?.sender }); // Notify the other peer
+    console.log(targetPeer);
+    socketRef.current?.emit("call-ended", { target: targetPeer }); // Notify the other peer
     console.log("Call ended.");
+    resetCallState();
   };
 
   // const cancelCall = () => {
@@ -272,7 +300,7 @@ const Phone = () => {
     technicianId: string;
     userId: string;
   }) => {
-    socket.emit("hire", {
+    socketRef.current?.emit("hire", {
       technicianId: technicianId,
       userId: userId,
     });
@@ -282,7 +310,7 @@ const Phone = () => {
     <ContentWraper onBack={() => navigate(-1)} name="Phone">
       <Box
         sx={{
-          padding: { xs: 0, sm: 20 },
+          padding: { xs: 0, sm: 5 },
           display: { xs: "flex", sm: "grid" },
           flexDirection: { xs: "column", sm: "row" },
           justifyContent: { xs: "center", sm: "space-evenly" },
@@ -290,7 +318,7 @@ const Phone = () => {
           gridTemplateAreas: `
         "column1 column2"
         `,
-          gridTemplateRows: "repeat(3,1fr)",
+          gridTemplateRows: "repeat(1,1fr)",
         }}
       >
         <Box

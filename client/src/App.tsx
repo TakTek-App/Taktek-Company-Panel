@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import SignUp from "./pages/SignUp";
 import Verification from "./pages/Verification";
 import PersistentDrawerMobile from "./components/PersistentDrawerMobile";
+import Support from "./pages/Support";
 
 const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const drawerWidth = 240;
@@ -41,6 +42,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
                   <Route path="/calls" element={<Calls />} />
                   <Route path="/jobs" element={<Jobs />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/support" element={<Support />} />
                 </Routes>
               </Box>
             </>
@@ -64,6 +66,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
                   <Route path="/calls" element={<Calls />} />
                   <Route path="/jobs" element={<Jobs />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/support" element={<Support />} />
                 </Routes>
               </Box>
             </>

@@ -23,6 +23,7 @@ import {
   Logout,
   People,
   Phone,
+  Support,
   Work,
 } from "@mui/icons-material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -134,6 +135,11 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
       text: "Logout",
       icon: <Logout />,
       onClick: () => logout(),
+    },
+    {
+      text: "Support",
+      icon: <Support />,
+      onClick: () => navigate("/support"),
     },
     {
       text: theme.palette.mode === "dark" ? "Light Mode" : "Dark Mode",
