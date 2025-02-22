@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 
 interface Company {

@@ -20,8 +20,6 @@ import stripePromise from "../utils/stripe";
 const Profile = () => {
   const { company } = useAuth();
   const [copied, setCopied] = useState(false);
-  console.log(company);
-  const customerId = localStorage.getItem("customerId");
 
   const handleCopy = () => {
     if (company?.id) {

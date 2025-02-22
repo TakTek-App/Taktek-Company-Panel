@@ -22,7 +22,7 @@ const SaveCard = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
-  const { company, setCompany } = useAuth();
+  const { company } = useAuth();
 
   const handleSaveCard = async () => {
     if (!stripe || !elements) return;
