@@ -20,6 +20,7 @@ import stripePromise from "../utils/stripe";
 const Profile = () => {
   const { company } = useAuth();
   const [copied, setCopied] = useState(false);
+  console.log(company);
   const customerId = localStorage.getItem("customerId");
 
   const handleCopy = () => {
@@ -100,7 +101,7 @@ const Profile = () => {
             disabled
           />
         </Grid2>
-        {!customerId && (
+        {!company?.customerId && (
           <Grid2 size={12} sx={{ mt: 2 }}>
             <Typography variant="h5" sx={{ mb: 5 }}>
               Save Payment Method

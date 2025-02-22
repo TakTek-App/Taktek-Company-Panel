@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import axios from "axios";
+import { useAuth } from "../contexts/AuthContextWrapper";
 
 const cardElementOptions = {
   style: {
@@ -20,6 +22,7 @@ const SaveCard = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
+  const { company, setCompany } = useAuth();
 
   const handleSaveCard = async () => {
     if (!stripe || !elements) return;
@@ -35,6 +38,17 @@ const SaveCard = () => {
       card: cardElement, // ✅ Ahora es seguro
     });
 
+    const getCompany = async () => {
+      const data = await axios.get(
+        `https://admin-panel-pple.onrender.com/companies/${company?.id}`
+      );
+
+      console.log(data.data);
+      console.log(JSON.stringify(data.data));
+
+      localStorage.setItem("company", JSON.stringify(data.data));
+    };
+
     if (error) return console.error(error.message);
 
     const response = await fetch(
@@ -49,7 +63,15 @@ const SaveCard = () => {
     const data = await response.json();
 
     if (data.customerId) {
-      localStorage.setItem("customerId", data.customerId); // ✅ Guardar customerId
+      axios.patch(
+        `https://admin-panel-pple.onrender.com/companies/${company?.id}`,
+        {
+          customerId: data?.customerId,
+        }
+      );
+      localStorage.removeItem("company");
+      getCompany();
+      // localStorage.setItem("comp", data.customerId); // ✅ Guardar customerId
       console.log("Tarjeta guardada y customerId almacenado:", data.customerId);
     } else {
       console.error("No se pudo obtener el customerId del backend.");

@@ -59,6 +59,10 @@ const Login = () => {
     }
   }, []);
 
+  useEffect(() => {
+    localStorage.removeItem("company");
+  }, []);
+
   return (
     <Box
       sx={{

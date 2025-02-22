@@ -4,6 +4,8 @@ import ContentWraper from "../components/ContentWraper";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContextWrapper";
+// import Ringtone from "../audio/Ringtone.wav";
+import ringtoneSrc from "../audio/Ringtone.wav";
 
 const Phone = () => {
   const { company } = useAuth();
@@ -30,39 +32,16 @@ const Phone = () => {
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
   const socketRef = useRef<Socket | null>(null);
 
+  const playSound = () => {
+    const ringtone = new Audio(ringtoneSrc);
+    ringtone
+      .play()
+      .catch((error) => console.error("Error reproduciendo el sonido:", error));
+  };
+
   console.log(socketRef.current);
 
   useEffect(() => {
-    // socket.emit("register", socketPeer);
-    // console.log("Registered as technician:", socketPeer.socketId);
-
-    // // Listen for incoming signaling messages
-    // socket.on("offer", ({ offer, sender, senderData }) => {
-    //   console.log(`Incoming offer from ${sender} with data:`, senderData);
-    //   setIncomingCall({ sender });
-    //   setCallerData(senderData);
-    //   handleOffer(offer, sender);
-    // });
-
-    // socket.on("answer", handleAnswer);
-    // socket.on("ice-candidate", handleIceCandidate);
-    // socket.on("call-rejected", () => {
-    //   resetCallState(); // Reset state when the call is rejected
-    //   alert("Call was rejected.");
-    //   console.log("Call rejected.");
-    // });
-
-    // socket.on("call-ended", () => {
-    //   resetCallState();
-    //   alert("The other peer has ended the call.");
-    //   console.log("Call ended.");
-    // });
-
-    // socket?.on("call-cancelled", () => {
-    //   resetCallState();
-    //   console.log(`Call cancelled`);
-    // });
-
     // Request media stream (audio only)
     const getUserMedia = async () => {
       const constraints = {
@@ -79,18 +58,10 @@ const Phone = () => {
     };
 
     getUserMedia();
-
-    // return () => {
-    //   socket.off("offer");
-    //   socket.off("answer");
-    //   socket.off("ice-candidate");
-    //   socket.off("call-rejected");
-    //   socket.off("call-ended");
-    // };
   }, []);
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io("http://192.168.2.11:3002", {
+      socketRef.current = io("https://taktek-app-1.onrender.com", {
         transports: ["websocket"],
         reconnectionAttempts: 5,
         reconnectionDelay: 3000,
@@ -128,6 +99,12 @@ const Phone = () => {
       socketRef.current?.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (incomingCall) {
+      playSound();
+    }
+  }, [incomingCall]);
 
   useEffect(() => {
     if (inCall && !remoteStream) {
