@@ -7,8 +7,6 @@ import sgMail from "@sendgrid/mail";
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-console.log(process.env.SENDGRID_API_KEY);
-
 const app = express();
 app.use(cors());
 app.use(json());
