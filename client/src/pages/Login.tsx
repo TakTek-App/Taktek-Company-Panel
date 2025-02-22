@@ -59,74 +59,21 @@ const Login = () => {
     }
   }, []);
 
-  return (
-    // <Box
-    //   sx={{
-    //     display: "flex",
-    //     minHeight: "100vh",
-    //   }}
-    // >
-    //   <Paper
-    //     elevation={3}
-    //     sx={{
-    //       width: "100%",
-    //       margin: "50px",
-    //       padding: "50px",
-    //       display: "flex",
-    //       justifyContent: "space-evenly",
-    //       alignItems: "center",
-    //     }}
-    //   >
-    //     <Box
-    //       sx={{
-    //         display: "flex",
-    //         justifyContent: "space-evenly",
-    //         alignItems: "center",
-    //         width: "100%",
-    //         flexWrap: "wrap",
-    //       }}
-    //     >
-    //       <Box
-    //         sx={{
-    //           display: "flex",
-    //           flexDirection: "column",
-    //           justifyContent: "center",
-    //           alignItems: "center",
-    //         }}
-    //       >
-    //         <Box sx={{ textAlign: "center" }}>
-    //           <Typography variant="h2">Welcome Admin</Typography>
-    //         </Box>
-    //         <Box
-    //           sx={{ width: "250px" }}
-    //           component="img"
-    //           src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=f575a59c-4a52-47a4-93cd-8b532727805a"
-    //         />
-    //       </Box>
-    //       <Box>
-    //         <Paper
-    //           elevation={3}
-    //           sx={{
-    //             padding: "100px 10px",
-    //             backgroundColor: "#1d71bf",
-    //             width: "100%",
-    //             height: "fit-content",
-    //             display: "flex",
-    //             justifyContent: "center",
-    //             alignItems: "center",
-    //           }}
-    //         >
+  useEffect(() => {
+    localStorage.removeItem("company");
+  }, []);
 
-    //         </Paper>
-    //       </Box>
-    //     </Box>
-    //   </Paper>
-    // </Box>
+  return (
     <Box
       sx={{
         height: "100vh",
-        // width: "100%",
-        display: "grid",
+        width: { xs: "90%" },
+        margin: { xs: "auto", sm: 0 },
+        textAlign: "center",
+        display: { xs: "flex", sm: "grid" },
+        flexDirection: { xs: "column", sm: "row" },
+        justifyContent: { xs: "space-evenly", sm: "normal" },
+        alignItems: { xs: "center", sm: "normal" },
         gridTemplateRows: "repeat(3,1fr)",
         gridTemplateAreas: `
       "logo ."
@@ -186,7 +133,7 @@ const Login = () => {
               if (data.status === 201) {
                 setSignedIn(true);
                 setCompany(response);
-                navigate("/home");
+                navigate("/phone");
               }
             } catch (error) {
               console.log(error);

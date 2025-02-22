@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 
 interface Company {
@@ -19,6 +20,9 @@ interface Company {
   services: Service[];
   technicians: any[];
   verified: boolean;
+  lastChargedCalls: number;
+  customerId: string;
+  lastPaymentDate: string;
 }
 
 interface Service {
@@ -61,6 +65,7 @@ const AuthContextWrapper = ({ children }: { children: ReactElement }) => {
   useEffect(() => {
     localStorage.setItem("signedIn", signedIn.toString());
   }, [signedIn]);
+
   useEffect(() => {
     if (company) {
       localStorage.setItem("company", JSON.stringify(company));

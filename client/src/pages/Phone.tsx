@@ -1,13 +1,22 @@
 import { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import ContentWraper from "../components/ContentWraper";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContextWrapper";
+// import Ringtone from "../audio/Ringtone.wav";
+import ringtoneSrc from "../audio/Ringtone.wav";
 
 const Phone = () => {
-  const socket = io("https://signaling-server-yoj5.onrender.com");
+  const { company } = useAuth();
+  // const socket = io("https://taktek-app-1.onrender.com", {
+  //   transports: ["websocket"],
+  //   reconnectionAttempts: 5,
+  //   reconnectionDelay: 3000,
+  // });
   const socketPeer = {
-    socketId: "santizapata",
+    role: "company",
+    socketId: company?.id,
   };
   const navigate = useNavigate();
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -21,38 +30,18 @@ const Phone = () => {
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const [targetPeer, setTargetPeer] = useState<string | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
+  const socketRef = useRef<Socket | null>(null);
+
+  const playSound = () => {
+    const ringtone = new Audio(ringtoneSrc);
+    ringtone
+      .play()
+      .catch((error) => console.error("Error reproduciendo el sonido:", error));
+  };
+
+  console.log(socketRef.current);
 
   useEffect(() => {
-    socket.emit("register", socketPeer);
-    console.log("Registered as technician:", socketPeer.socketId);
-
-    // Listen for incoming signaling messages
-    socket.on("offer", ({ offer, sender, senderData }) => {
-      console.log(`Incoming offer from ${sender} with data:`, senderData);
-      setIncomingCall({ sender });
-      setCallerData(senderData);
-      handleOffer(offer, sender);
-    });
-
-    socket.on("answer", handleAnswer);
-    socket.on("ice-candidate", handleIceCandidate);
-    socket.on("call-rejected", () => {
-      resetCallState(); // Reset state when the call is rejected
-      alert("Call was rejected.");
-      console.log("Call rejected.");
-    });
-
-    socket.on("call-ended", () => {
-      resetCallState();
-      alert("The other peer has ended the call.");
-      console.log("Call ended.");
-    });
-
-    socket?.on("call-cancelled", () => {
-      resetCallState();
-      console.log(`Call cancelled`);
-    });
-
     // Request media stream (audio only)
     const getUserMedia = async () => {
       const constraints = {
@@ -69,15 +58,53 @@ const Phone = () => {
     };
 
     getUserMedia();
+  }, []);
+  useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io("https://taktek-app-1.onrender.com", {
+        transports: ["websocket"],
+        reconnectionAttempts: 5,
+        reconnectionDelay: 3000,
+      });
+
+      socketRef.current.emit("register", socketPeer);
+      console.log("Registered as technician:", socketPeer.socketId);
+
+      socketRef.current.on("offer", ({ offer, sender, senderData }) => {
+        console.log(`Incoming offer from ${sender} with data:`, senderData);
+        setIncomingCall({ sender });
+        setCallerData(senderData);
+        handleOffer(offer, sender);
+      });
+
+      socketRef.current.on("answer", handleAnswer);
+      socketRef.current.on("ice-candidate", handleIceCandidate);
+      socketRef.current.on("call-rejected", () => {
+        resetCallState();
+        alert("Call was rejected.");
+      });
+
+      socketRef.current.on("call-ended", () => {
+        resetCallState();
+        alert("The other peer has ended the call.");
+      });
+
+      socketRef.current.on("call-cancelled", () => {
+        resetCallState();
+        console.log(`Call cancelled`);
+      });
+    }
 
     return () => {
-      socket.off("offer");
-      socket.off("answer");
-      socket.off("ice-candidate");
-      socket.off("call-rejected");
-      socket.off("call-ended");
+      socketRef.current?.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (incomingCall) {
+      playSound();
+    }
+  }, [incomingCall]);
 
   useEffect(() => {
     if (inCall && !remoteStream) {
@@ -162,7 +189,7 @@ const Phone = () => {
 
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        socket.emit("ice-candidate", {
+        socketRef.current?.emit("ice-candidate", {
           target: targetPeer,
           candidate: event.candidate,
         });
@@ -173,60 +200,43 @@ const Phone = () => {
     return peerConnection;
   };
 
-  // Start a call
-  // const startCall = async () => {
-  //   if (!localStream || !targetPeer) return;
-
-  //   const peerConnection = createPeerConnection(targetPeer);
-
-  //   // Add local tracks to the peer connection
-  //   localStream
-  //     .getTracks()
-  //     .forEach((track) => peerConnection.addTrack(track, localStream));
-
-  //   try {
-  //     const offer = await peerConnection.createOffer();
-  //     await peerConnection.setLocalDescription(offer);
-
-  //     // Send the offer to the target peer
-  //     socket.emit("offer", { target: targetPeer, offer });
-  //     peerConnectionRef.current = peerConnection;
-
-  //     setIsCalling(true);
-  //     console.log(`Calling peer: ${targetPeer}`);
-  //   } catch (error) {
-  //     console.error("Error creating or setting offer:", error);
-  //   }
-  // };
-
   // Accept a call
   const acceptCall = async () => {
     if (!incomingCall || !localStream) return;
+
+    console.log("socket.id", socketRef.current?.id);
 
     const peerConnection = peerConnectionRef.current!;
 
     // Add local tracks before creating an answer
     localStream
       .getTracks()
-      .forEach((track) => peerConnection.addTrack(track, localStream));
+      .forEach((track) => peerConnection?.addTrack(track, localStream));
 
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
+    const answer = await peerConnection?.createAnswer();
+    await peerConnection?.setLocalDescription(answer);
 
     // Send answer to the caller
-    socket.emit("answer", { target: incomingCall.sender, answer });
+    if (incomingCall?.sender) {
+      socketRef.current?.emit("answer", {
+        target: incomingCall?.sender,
+        answer,
+      });
+    }
 
-    setTargetPeer(incomingCall.sender); // Set target peer on the callee side
+    setTargetPeer(incomingCall?.sender); // Set target peer on the callee side
     setIncomingCall(null);
     setInCall(true);
-    console.log(`Call accepted with ${incomingCall.sender}`);
+    console.log(`Call accepted with ${incomingCall?.sender}`);
   };
 
   // Reject a call
   const rejectCall = () => {
     if (incomingCall) {
-      socket.emit("call-rejected", { target: incomingCall.sender });
-      console.log(`Call rejected from ${incomingCall.sender}`);
+      socketRef.current?.emit("call-rejected", {
+        target: incomingCall?.sender,
+      });
+      console.log(`Call rejected from ${incomingCall?.sender}`);
       setIncomingCall(null); // Clear incoming call state
     }
   };
@@ -236,10 +246,10 @@ const Phone = () => {
     if (peerConnectionRef.current) {
       peerConnectionRef.current.close();
     }
-
-    resetCallState();
-    socket.emit("call-ended", { target: targetPeer }); // Notify the other peer
+    console.log(targetPeer);
+    socketRef.current?.emit("call-ended", { target: targetPeer }); // Notify the other peer
     console.log("Call ended.");
+    resetCallState();
   };
 
   // const cancelCall = () => {
@@ -260,100 +270,153 @@ const Phone = () => {
     setRemoteStream(null); // Clear remote stream
   };
 
+  const createJob = ({
+    technicianId,
+    userId,
+  }: {
+    technicianId: string;
+    userId: string;
+  }) => {
+    socketRef.current?.emit("hire", {
+      technicianId: technicianId,
+      userId: userId,
+    });
+  };
+
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Phone">
-      <div style={{ padding: 20 }}>
-        {incomingCall && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              border: "10px solid black",
-            }}
-          >
-            <p>Incoming call</p>
-            <img
-              src={callerData?.photo}
-              alt=""
-              width="90%"
-              style={{
-                margin: "auto",
+      <Box
+        sx={{
+          padding: { xs: 0, sm: 5 },
+          display: { xs: "flex", sm: "grid" },
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: { xs: "center", sm: "space-evenly" },
+          alignItems: "center",
+          gridTemplateAreas: `
+        "column1 column2"
+        `,
+          gridTemplateRows: "repeat(1,1fr)",
+        }}
+      >
+        <Box
+          sx={{
+            gridArea: "column1",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {incomingCall && !inCall && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "10px solid black",
+                marginBottom: "50px",
               }}
-            />
-            <Typography>{callerData?.firstName}</Typography>
-            <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
-              Accept
-            </Button>
-            <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
-              Reject
-            </Button>
-          </Box>
-        )}
-        {!incomingCall && (
-          <Box
-            sx={{
-              margin: "50px 0px",
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              borderTop: "20px solid black",
-              borderBottom: "40px solid black",
-              borderRight: "10px solid black",
-              borderLeft: "10px solid black",
-            }}
-          >
-            <Typography>You should see the incoming calls here</Typography>
-          </Box>
-        )}
-        {inCall && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "10px",
-              width: 250,
-              height: 500,
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "20px",
-              gap: "20px",
-              justifyContent: "center",
-              textAlign: "center",
-              border: "10px solid black",
-            }}
-          >
-            <p>In Call With</p>
-            <img
-              src={callerData?.photo}
-              alt=""
-              width="90%"
-              style={{
-                margin: "auto",
+            >
+              <p>Incoming call</p>
+              <img
+                src={callerData?.photo}
+                alt=""
+                width="90%"
+                style={{
+                  margin: "auto",
+                }}
+              />
+              <Typography>{callerData?.firstName}</Typography>
+              <Button onClick={acceptCall} sx={{ backgroundColor: "#38bb5c" }}>
+                Accept
+              </Button>
+              <Button onClick={rejectCall} sx={{ backgroundColor: "tomato" }}>
+                Reject
+              </Button>
+            </Box>
+          )}
+          {!incomingCall && !inCall && (
+            <Box
+              sx={{
+                margin: "50px 0px",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                borderTop: "20px solid black",
+                borderBottom: "40px solid black",
+                borderRight: "10px solid black",
+                borderLeft: "10px solid black",
               }}
-            />
-            <Typography>{callerData?.firstName}</Typography>
-            <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
-              End Call
-            </Button>
-          </Box>
-        )}
+            >
+              <Typography>You should see the incoming calls here</Typography>
+            </Box>
+          )}
+          {inCall && !incomingCall && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: "10px",
+                width: 250,
+                height: 500,
+                backgroundColor: "#fff",
+                color: "#000",
+                padding: "20px",
+                gap: "20px",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "10px solid black",
+                marginBottom: "50px",
+              }}
+            >
+              <p>In Call With</p>
+              <img
+                src={callerData?.photo}
+                alt=""
+                width="90%"
+                style={{
+                  margin: "auto",
+                }}
+              />
+              <Typography>{callerData?.firstName}</Typography>
+              <Button onClick={endCall} sx={{ backgroundColor: "tomato" }}>
+                End Call
+              </Button>
+            </Box>
+          )}
+        </Box>
+        <Box
+          sx={{
+            gridArea: "column2",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <select name="" id="">
+            <option value="select_option">Select A Technician</option>
+          </select>
+
+          <Button onClick={() => createJob}>Create Job</Button>
+        </Box>
         {remoteStream && (
           <audio
             autoPlay
@@ -362,7 +425,7 @@ const Phone = () => {
             }}
           />
         )}
-      </div>
+      </Box>
     </ContentWraper>
   );
 };
