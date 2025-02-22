@@ -354,14 +354,14 @@ app.post("/send-email", (req, res) => {
     sgMail
       .send(msg)
       .then(() => {
-        console.log("Email Sent");
+        console.log("Email Sent to User");
       })
       .catch((error) => {
         console.error(error);
       });
     sgMail
       .send(msg2)
-      .then(() => console.log("Email Sent"))
+      .then(() => console.log("Email Sent to Taktek"))
       .catch((error) => {
         console.error(error);
       });
