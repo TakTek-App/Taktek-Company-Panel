@@ -179,7 +179,14 @@ const Phone = () => {
   // Create a new peer connection
   const createPeerConnection = (targetPeer: string): RTCPeerConnection => {
     const peerConnection = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        {
+          urls: "turn:relay1.expressturn.com:3478",
+          username: "efK9QS1BYXA10VH4Y8",
+          credential: "rDO3JiN6ZSS2ju7C",
+        },
+      ],
     });
 
     peerConnection.ontrack = (event) => {

@@ -21,6 +21,7 @@ import {
   ChevronRight,
   DarkMode,
   Dialpad,
+  Home,
   LightMode,
   Logout,
   People,
@@ -119,7 +120,7 @@ const PersistentDrawerMobile = ({
   const theme = useTheme();
 
   const itemList = [
-    // { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
+    { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
     {
       text: "Jobs",
       icon: <Work />,
