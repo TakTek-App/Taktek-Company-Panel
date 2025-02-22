@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-// import Home from "./pages/Home";
 import PersistentDrawer from "./components/PersistentDrawer";
 import { Box, useMediaQuery } from "@mui/material";
 import { useAuth } from "./contexts/AuthContextWrapper";
@@ -13,6 +12,7 @@ import SignUp from "./pages/SignUp";
 import Verification from "./pages/Verification";
 import PersistentDrawerMobile from "./components/PersistentDrawerMobile";
 import Support from "./pages/Support";
+import Home from "./pages/Home";
 
 const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const drawerWidth = 240;
@@ -36,7 +36,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
                 }}
               >
                 <Routes>
-                  {/* <Route path="/home" element={<Home />} /> */}
+                  <Route path="/home" element={<Home />} />
                   <Route path="/phone" element={<Phone />} />
                   <Route path="/technicians" element={<Technicians />} />
                   <Route path="/calls" element={<Calls />} />
@@ -60,7 +60,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
                 }}
               >
                 <Routes>
-                  {/* <Route path="/home" element={<Home />} /> */}
+                  <Route path="/home" element={<Home />} />
                   <Route path="/phone" element={<Phone />} />
                   <Route path="/technicians" element={<Technicians />} />
                   <Route path="/calls" element={<Calls />} />

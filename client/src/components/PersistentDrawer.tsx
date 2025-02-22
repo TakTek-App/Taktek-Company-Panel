@@ -19,6 +19,7 @@ import {
   Business,
   DarkMode,
   Dialpad,
+  Home,
   LightMode,
   Logout,
   People,
@@ -113,7 +114,7 @@ const PersistentDrawer = ({ toggleTheme }: { toggleTheme: () => void }) => {
   const theme = useTheme();
 
   const itemList = [
-    // { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
+    { text: "Home", icon: <Home />, onClick: () => navigate("/home") },
     { text: "Jobs", icon: <Work />, onClick: () => navigate("/jobs") },
     { text: "Calls", icon: <Phone />, onClick: () => navigate("/calls") },
     {
