@@ -31,6 +31,8 @@ const Phone = () => {
   const [targetPeer, setTargetPeer] = useState<string | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
   const socketRef = useRef<Socket | null>(null);
+  const [availableTechnicians, setAvailableTechnicians] = useState<any>([]);
+  const [technicianId, setTechnicianId] = useState<any>(undefined);
 
   const playSound = () => {
     const ringtone = new Audio(ringtoneSrc);
@@ -38,8 +40,6 @@ const Phone = () => {
       .play()
       .catch((error) => console.error("Error reproduciendo el sonido:", error));
   };
-
-  console.log(socketRef.current);
 
   useEffect(() => {
     // Request media stream (audio only)
@@ -59,6 +59,9 @@ const Phone = () => {
 
     getUserMedia();
   }, []);
+
+  console.log(availableTechnicians);
+  console.log(callerData, "callerData");
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io("https://taktek-app-1.onrender.com", {
@@ -69,6 +72,10 @@ const Phone = () => {
 
       socketRef.current.emit("register", socketPeer);
       console.log("Registered as technician:", socketPeer.socketId);
+      socketRef.current.on("peer-list", (technicians: any[]) => {
+        console.log(technicians, "techni");
+        setAvailableTechnicians(technicians);
+      });
 
       socketRef.current.on("offer", ({ offer, sender, senderData }) => {
         console.log(`Incoming offer from ${sender} with data:`, senderData);
@@ -277,16 +284,11 @@ const Phone = () => {
     setRemoteStream(null); // Clear remote stream
   };
 
-  const createJob = ({
-    technicianId,
-    userId,
-  }: {
-    technicianId: string;
-    userId: string;
-  }) => {
+  const createJob = (technicianId: any) => {
+    console.log(technicianId);
     socketRef.current?.emit("hire", {
       technicianId: technicianId,
-      userId: userId,
+      clientId: callerData?.socketId,
     });
   };
 
@@ -418,11 +420,33 @@ const Phone = () => {
             gap: "10px",
           }}
         >
-          <select name="" id="">
-            <option value="select_option">Select A Technician</option>
+          <select
+            name=""
+            id=""
+            onChange={(e) => {
+              console.log(e.target.value);
+
+              setTechnicianId(e.target.value);
+            }}
+            style={{
+              width: "300px",
+              height: "fit-content",
+              fontSize: "18px",
+              borderRadius: "5px",
+              padding: "10px 10px",
+              borderColor: "#c2c2c2",
+            }}
+          >
+            <option value="Select A Technician">Select A Technician</option>
+            {availableTechnicians &&
+              availableTechnicians.map((tech: any) => (
+                <option value={tech.socketId} key={tech.id}>
+                  {tech.firstName}
+                </option>
+              ))}
           </select>
 
-          <Button onClick={() => createJob}>Create Job</Button>
+          <Button onClick={() => createJob(technicianId)}>Create Job</Button>
         </Box>
         {remoteStream && (
           <audio
