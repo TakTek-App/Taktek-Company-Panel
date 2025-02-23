@@ -133,7 +133,7 @@ const Login = () => {
               if (data.status === 201) {
                 setSignedIn(true);
                 setCompany(response);
-                navigate("/phone");
+                navigate("/home");
               }
             } catch (error) {
               console.log(error);
