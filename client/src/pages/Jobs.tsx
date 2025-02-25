@@ -38,7 +38,17 @@ const Jobs = () => {
         }),
       flex: 1,
     },
-    { field: "completed", headerName: "Completed", flex: 1 },
+    {
+      field: "completed",
+      headerName: "Completed",
+      flex: 1,
+      valueFormatter: (value) => {
+        if (value) return "Yes";
+        else {
+          return "No";
+        }
+      },
+    },
     {
       field: "firstName",
       headerName: "User Name",
