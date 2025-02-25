@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Rating, useMediaQuery } from "@mui/material";
+import { Rating, Switch, useMediaQuery } from "@mui/material";
 import ContentWraper from "../components/ContentWraper";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useAuth } from "../contexts/AuthContextWrapper";
 import { Star } from "@mui/icons-material";
+import axios from "axios";
 
 const Technicians = () => {
   const [technicians, setTechnicians] = useState();
@@ -18,6 +19,19 @@ const Technicians = () => {
     );
     const response = await data.json();
     setTechnicians(response);
+  };
+
+  const handleReceiveCalls = async (value: boolean, technicianId: number) => {
+    try {
+      axios.patch(
+        `https://admin-panel-pple.onrender.com/technicians/${technicianId}`,
+        {
+          canReceiveCalls: value,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const columns: GridColDef[] = [
@@ -53,6 +67,17 @@ const Technicians = () => {
           readOnly
           precision={0.5}
           emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+        />
+      ),
+    },
+    {
+      field: "canReceiveCalls",
+      headerName: "Can Receive Calls",
+      flex: 1,
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.canReceiveCalls}
+          onChange={(e) => handleReceiveCalls(e.target.checked, params.row.id)}
         />
       ),
     },
@@ -98,7 +123,7 @@ const Technicians = () => {
 
   useEffect(() => {
     getTechnicians();
-  }, []);
+  }, [technicians]);
 
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Technicians">

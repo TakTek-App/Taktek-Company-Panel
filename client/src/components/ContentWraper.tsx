@@ -24,7 +24,10 @@ const ContentWraper: React.FC<ContentWraperProps> = ({
       elevation={3}
       sx={{
         padding: { xs: "20px 0", sm: 4 },
-        width: { xs: "90%", sm: `calc(100% - 240px)` },
+        width: {
+          xs: "90%",
+          md: `calc(100% - 240px)`,
+        },
         marginLeft: { xs: 0, sm: "240px" },
         marginTop: { xs: "100px", sm: "120px" },
         marginBottom: { xs: "100px", sm: "120px" },
