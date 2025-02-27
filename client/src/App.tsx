@@ -81,12 +81,7 @@ const App = ({ toggleTheme }: { toggleTheme: () => void }) => {
       )}
       {!company?.verified && (
         <Routes>
-          <Route
-            path="/verification"
-            element={
-              <Verification paramToConfirm={company?.driverLicenseExpDate} />
-            }
-          />
+          <Route path="/verification" element={<Verification />} />
         </Routes>
       )}
     </Box>
