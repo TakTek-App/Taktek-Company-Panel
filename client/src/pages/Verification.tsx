@@ -1,7 +1,8 @@
 import { Box, Typography, Button } from "@mui/material";
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import { useState } from "react";
-import { useAuth } from "../contexts/AuthContextWrapper";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 // Configuración de Cloudinary
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dt9psezgt/upload";
@@ -20,9 +21,13 @@ interface VerificationProps {
   paramToConfirm?: string; // Permite que sea undefined
 }
 
-const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
+const Verification: React.FC<VerificationProps> = () => {
   const [uploading, setUploading] = useState(false);
-  const { company } = useAuth();
+  const [inProgress, setInProgress] = useState(false);
+  const [searchParams] = useSearchParams();
+  const companyId = searchParams.get("companyId");
+  const companyName = searchParams.get("companyName");
+
   const handleFileUpload = async (
     file: File,
     fieldName: keyof FormValues,
@@ -60,13 +65,29 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
 
     try {
       const response = await fetch(
-        `https://admin-panel-pple.onrender.com/companies/${company?.id}`,
+        `https://admin-panel-pple.onrender.com/companies/${companyId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
         }
       );
+      // https://taktek-company-panel-backend.onrender.com
+      axios.post(
+        "https://taktek-company-panel-backend.onrender.com/send-documents",
+        {
+          to: "tech@taktek.app",
+          from: "tech@taktek.app",
+          subject: "Verification Documents",
+          businessReg: values.businessReg,
+          insurance: values.insurance,
+          driverLicense: values.driverLicense,
+          companyName: companyName,
+          companyId: companyId,
+        }
+      );
+
+      setInProgress(true);
 
       if (!response.ok) {
         throw new Error("Error en la actualización");
@@ -79,8 +100,9 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
       setSubmitting(false);
     }
   };
+  useEffect(() => {}, [inProgress]);
 
-  if (paramToConfirm !== "") {
+  if (inProgress) {
     return (
       <Box
         sx={{
@@ -101,7 +123,7 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
           }}
         >
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=f575a59c-4a52-47a4-93cd-8b532727805a"
+            src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
             alt="logo"
             width="100%"
           />
@@ -145,7 +167,7 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
         }}
       >
         <img
-          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=f575a59c-4a52-47a4-93cd-8b532727805a"
+          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
           alt="logo"
           width="100%"
         />
@@ -190,89 +212,66 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
                   display: "grid",
                   gridTemplateAreas: `
                   "title title"
-                  "field1 field4"
-                  "field2 field5"
+                  "field1 field3"
+                  "field2 field4"
                   "field6 field6"
                   "button button"
                   `,
                   gap: "20px",
                 }}
               >
-                <Field
-                  type="Date"
+                <label
                   style={{
                     gridArea: "field1",
-                    borderRadius: "10px",
-                    outline: "none",
-                    border: "1px solid #c2c2c2",
-                    padding: "10px 20px",
-                    fontFamily: "sans-serif",
-                    fontSize: "18px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
                   }}
-                  name="driverLicenseExpDate"
-                  onChange={(e: any) => {
-                    setFieldValue("driverLicenseExpDate", e.target.value);
-                    console.log(e.target.value);
-                  }}
-                />
-                <Field
-                  type="Date"
-                  name="insuranceExpDate"
+                >
+                  Driver License Exp. Date
+                  <Field
+                    type="Date"
+                    style={{
+                      borderRadius: "10px",
+                      outline: "none",
+                      border: "1px solid #c2c2c2",
+                      padding: "10px 20px",
+                      fontFamily: "sans-serif",
+                      fontSize: "18px",
+                    }}
+                    name="driverLicenseExpDate"
+                    onChange={(e: any) => {
+                      setFieldValue("driverLicenseExpDate", e.target.value);
+                      console.log(e.target.value);
+                    }}
+                  />
+                </label>
+                <label
                   style={{
                     gridArea: "field2",
-                    borderRadius: "10px",
-                    outline: "none",
-                    border: "1px solid #c2c2c2",
-                    padding: "10px 20px",
-                    fontFamily: "sans-serif",
-                    fontSize: "18px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
                   }}
-                  onChange={(e: any) => {
-                    setFieldValue("insuranceExpDate", e.target.value);
-                  }}
-                />
+                >
+                  Insurance Exp. Date
+                  <Field
+                    type="Date"
+                    name="insuranceExpDate"
+                    style={{
+                      borderRadius: "10px",
+                      outline: "none",
+                      border: "1px solid #c2c2c2",
+                      padding: "10px 20px",
+                      fontFamily: "sans-serif",
+                      fontSize: "18px",
+                    }}
+                    onChange={(e: any) => {
+                      setFieldValue("insuranceExpDate", e.target.value);
+                    }}
+                  />
+                </label>
                 {/* <Field style={{ gridArea: "field3" }} /> */}
-                <input
-                  style={{
-                    gridArea: "field4",
-                    border: "1px solid #c2c2c2",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    fontFamily: "sans-serif",
-                    fontSize: "18px",
-                  }}
-                  type="file"
-                  accept="application/pdf,image/*"
-                  onChange={(e) =>
-                    e.target.files &&
-                    handleFileUpload(
-                      e.target.files[0],
-                      "businessReg",
-                      setFieldValue
-                    )
-                  }
-                />
-                <input
-                  style={{
-                    gridArea: "field5",
-                    border: "1px solid #c2c2c2",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    fontFamily: "sans-serif",
-                    fontSize: "18px",
-                  }}
-                  type="file"
-                  accept="application/pdf,image/*"
-                  onChange={(e) =>
-                    e.target.files &&
-                    handleFileUpload(
-                      e.target.files[0],
-                      "insurance",
-                      setFieldValue
-                    )
-                  }
-                />
-
                 <label
                   style={{
                     gridArea: "field6",
@@ -282,6 +281,65 @@ const Verification: React.FC<VerificationProps> = ({ paramToConfirm }) => {
                   }}
                 >
                   Business Registration
+                  <input
+                    style={{
+                      border: "1px solid #c2c2c2",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      fontFamily: "sans-serif",
+                      fontSize: "18px",
+                    }}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    onChange={(e) =>
+                      e.target.files &&
+                      handleFileUpload(
+                        e.target.files[0],
+                        "businessReg",
+                        setFieldValue
+                      )
+                    }
+                  />
+                </label>
+                <label
+                  style={{
+                    gridArea: "field4",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
+                  }}
+                >
+                  Insurance
+                  <input
+                    style={{
+                      border: "1px solid #c2c2c2",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      fontFamily: "sans-serif",
+                      fontSize: "18px",
+                    }}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    onChange={(e) =>
+                      e.target.files &&
+                      handleFileUpload(
+                        e.target.files[0],
+                        "insurance",
+                        setFieldValue
+                      )
+                    }
+                  />
+                </label>
+
+                <label
+                  style={{
+                    gridArea: "field3",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
+                  }}
+                >
+                  Driver License
                   <input
                     style={{
                       border: "1px solid #c2c2c2",

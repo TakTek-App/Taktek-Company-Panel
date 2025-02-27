@@ -43,10 +43,13 @@ const Login = () => {
         "https://admin-panel-pple.onrender.com/companies",
         postObject
       );
-
+      0;
       if (data.status === 201) {
         company_created = "false";
-        localStorage.removeItem("companyData");
+        navigate(
+          `/verification?companyId=${data.data.id}&companyName=${data.data.name}`
+        );
+        // localStorage.removeItem("companyData");
       }
     } catch (error) {
       console.log(error);
