@@ -7,12 +7,12 @@
   .signup-container {
     display: grid;
     grid-template-columns: 1fr;
-    height: 100vh;
+    grid-template-rows: 1fr;
   }
   .signup-container-dark {
     display: grid;
     grid-template-columns: 1fr;
-    height: 100vh;
+    grid-template-rows: 1fr;
     background-color: #000000;
   }
   .logo-container {
@@ -45,14 +45,14 @@
     color: #000000;
     text-align: center;
     text-wrap: balance;
-    font-size: 40px;
+    font-size: 40px !important;
   }
 
   .container1-title-dark {
     color: #ffffff;
     text-align: center;
     text-wrap: balance;
-    font-size: 40px;
+    font-size: 40px !important;
   }
   .container1-title span {
     color: #1d71bf;
