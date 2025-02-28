@@ -7,6 +7,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  useTheme,
 } from "@mui/material";
 
 import axios from "axios";
@@ -39,6 +40,7 @@ const signUpSchema = Yup.object().shape({
 
 const SignUp = () => {
   const [services, setServices] = useState<Service[]>([]);
+  const theme = useTheme();
   const getServices = async () => {
     try {
       const data = await axios.get(
@@ -52,27 +54,40 @@ const SignUp = () => {
   }, []);
 
   return (
-    <Box className="signup-container">
+    <Box
+      className={
+        theme.palette.mode === "light"
+          ? "signup-container"
+          : "signup-container-dark"
+      }
+    >
       <Box className="logo-container" sx={{ width: "250px" }}>
-        <img
-          className="logo"
-          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
-          alt=""
-          width="100%"
-        />
+        {theme.palette.mode === "light" ? (
+          <img
+            className="logo"
+            src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
+            alt=""
+            width="100%"
+          />
+        ) : (
+          <img
+            className="logo"
+            src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=9d15ea8c-084a-4999-b51a-b8711cdab59c"
+            alt=""
+            width="100%"
+          />
+        )}
       </Box>
 
       <Box className="main-content-container">
         <Box className="main-container1">
           <Typography
-            className="container1-title"
+            className={
+              theme.palette.mode === "light"
+                ? "container1-title"
+                : "container1-title-dark"
+            }
             variant="h1"
-            sx={{
-              textAlign: "center",
-              textWrap: "balance",
-              fontSize: "40px",
-              color: "#000",
-            }}
           >
             You're one step away from the
             <span> lead generation </span>
@@ -110,15 +125,6 @@ const SignUp = () => {
               localStorage.setItem("companyData", JSON.stringify(companyData));
               window.location.href =
                 "https://buy.stripe.com/test_5kA6oy1wm2Hu11K288";
-              // const data = await axios.post(
-              //   "https://admin-panel-pple.onrender.com/companies",
-              //   companyData
-              // );
-              // console.log(data);
-              // if (data.status === 201) {
-              //   window.location.href =
-              //     "https://buy.stripe.com/test_5kA6oy1wm2Hu11K288";
-              // }
             }}
           >
             {({ values, setFieldValue, isValid, errors, touched, dirty }) => {

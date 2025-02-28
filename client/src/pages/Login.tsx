@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import "../App.css";
 import { Field, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 const Login = () => {
+  const theme = useTheme();
   const fieldStyle = {
     width: "80%",
     margin: "0px 10px",
@@ -15,8 +16,11 @@ const Login = () => {
     border: "1px solid gray",
     borderRadius: "5px",
     outline: "none",
+    backgroundColor: theme.palette.mode === "light" ? "#ffffff" : "#ffffff15",
+    color: theme.palette.mode === "light" ? "#000" : "#fff",
   };
   const params = new URLSearchParams(window.location.search);
+
   let company_created = params.get("company_created");
   console.log(company_created);
 
@@ -82,6 +86,8 @@ const Login = () => {
       "logo ."
       "column1 column2"
       `,
+        backgroundColor: theme.palette.mode === "light" ? "#f1f1f1" : "#000",
+        color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
       }}
     >
       <Box
@@ -90,11 +96,19 @@ const Login = () => {
           width: "250px",
         }}
       >
-        <img
-          src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
-          alt="logo"
-          width="100%"
-        />
+        {theme.palette.mode === "light" ? (
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo_rectangle_black.png?alt=media&token=e2faaa6e-f44c-4e07-831b-c970c9e6c8da"
+            alt="logo"
+            width="100%"
+          />
+        ) : (
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/sds-main-29a46.firebasestorage.app/o/images%2Ftaktek_logo-rectangle.png?alt=media&token=9d15ea8c-084a-4999-b51a-b8711cdab59c"
+            alt="logo"
+            width="100%"
+          />
+        )}
       </Box>
       <Box
         sx={{
@@ -150,11 +164,16 @@ const Login = () => {
               justifyContent: "center",
               alignItems: "center",
               gap: "40px",
-              backgroundColor: "#f7f7f7",
               margin: "20px",
               borderRadius: "10px",
-              boxShadow: "0px 0px 50px 10px #00000034",
+
+              boxShadow:
+                theme.palette.mode === "light"
+                  ? "0px 0px 50px 10px #00000034"
+                  : "0px 0px 10px 2px rgba(255, 255, 255, 0.34)",
               padding: "80px 40px",
+              backgroundColor:
+                theme.palette.mode === "light" ? "#ffffff" : "#121212",
             }}
           >
             <Typography variant="h4">Login</Typography>
@@ -166,8 +185,18 @@ const Login = () => {
               type="password"
             />
             <Box sx={{ textAlign: "center", color: "#000" }}>
-              <Typography>Dont have an account?</Typography>
-              <Typography>
+              <Typography
+                sx={{
+                  color: theme.palette.mode === "light" ? "#000" : "#fff",
+                }}
+              >
+                Dont have an account?
+              </Typography>
+              <Typography
+                sx={{
+                  color: theme.palette.mode === "light" ? "#000" : "#fff",
+                }}
+              >
                 Sign Up
                 <span>
                   <span> </span>

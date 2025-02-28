@@ -1,6 +1,6 @@
 import ContentWraper from "../components/ContentWraper";
 import { useNavigate } from "react-router-dom";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { useAuth } from "../contexts/AuthContextWrapper";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { company } = useAuth();
+  const theme = useTheme();
 
   const getJobs = async () => {
     try {
@@ -117,7 +118,8 @@ const Home = () => {
           sx={{
             gridArea: "jobs",
             minWidth: "100%",
-            backgroundColor: "#f1f1f1",
+            backgroundColor:
+              theme.palette.mode === "light" ? "#f1f1f1" : "#ffffff15",
             borderRadius: "5px",
             height: "400px",
             display: "grid",
@@ -199,7 +201,8 @@ const Home = () => {
         <Box
           sx={{
             gridArea: "calls",
-            backgroundColor: "#f1f1f1",
+            backgroundColor:
+              theme.palette.mode === "light" ? "#f1f1f1" : "#ffffff15",
             borderRadius: "5px",
             display: "grid",
             height: "100%",
@@ -243,7 +246,8 @@ const Home = () => {
           sx={{
             gridArea: "technicians",
             width: "100%",
-            backgroundColor: "#f1f1f1",
+            backgroundColor:
+              theme.palette.mode === "light" ? "#f1f1f1" : "#ffffff15",
             borderRadius: "5px",
             display: "grid",
             height: "200px",
@@ -287,7 +291,8 @@ const Home = () => {
           sx={{
             gridArea: "lastweek",
             width: "100%",
-            backgroundColor: "#f1f1f1",
+            backgroundColor:
+              theme.palette.mode === "light" ? "#f1f1f1" : "#ffffff15",
             borderRadius: "5px",
             display: "grid",
             gridTemplateAreas: `
@@ -329,7 +334,8 @@ const Home = () => {
           sx={{
             gridArea: "thisweek",
             width: "100%",
-            backgroundColor: "#f1f1f1",
+            backgroundColor:
+              theme.palette.mode === "light" ? "#f1f1f1" : "#ffffff15",
             borderRadius: "5px",
             display: "grid",
             gridTemplateAreas: `

@@ -9,6 +9,12 @@
     grid-template-columns: 1fr;
     height: 100vh;
   }
+  .signup-container-dark {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    background-color: #000000;
+  }
   .logo-container {
     margin: 20px;
   }
@@ -19,6 +25,13 @@
     align-items: center;
     justify-content: space-evenly;
   }
+  .main-content-container-dark {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-content: space-evenly;
+    /* background-color: #121212; */
+  }
   .main-container1 {
     display: flex;
     margin: auto;
@@ -27,6 +40,19 @@
   .main-container2 {
     width: 60%;
     margin: auto;
+  }
+  .container1-title {
+    color: #000000;
+    text-align: center;
+    text-wrap: balance;
+    font-size: 40px;
+  }
+
+  .container1-title-dark {
+    color: #ffffff;
+    text-align: center;
+    text-wrap: balance;
+    font-size: 40px;
   }
   .container1-title span {
     color: #1d71bf;
