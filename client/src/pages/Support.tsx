@@ -1,4 +1,10 @@
-import { Box, Button, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import ContentWraper from "../components/ContentWraper";
 import { Field, Form, Formik } from "formik";
 import axios from "axios";
@@ -7,6 +13,7 @@ import { useAuth } from "../contexts/AuthContextWrapper";
 const Support = () => {
   const { company } = useAuth();
   const isMobile = useMediaQuery("(max-width:600px)");
+  const theme = useTheme();
   return (
     <ContentWraper name="Support">
       <Box>
@@ -79,6 +86,12 @@ const Support = () => {
                       border: "1px solid #c2c2c2",
                       fontSize: "18px",
                       lineHeight: "2",
+                      backgroundColor:
+                        theme.palette.mode === "light"
+                          ? "#f1f1f1"
+                          : "#ffffff15",
+                      color:
+                        theme.palette.mode === "light" ? "#000000" : "#ffffff",
                     }
                   : {
                       gridArea: "field1",
@@ -92,6 +105,12 @@ const Support = () => {
                       height: "50px",
                       maxHeight: "50px",
                       width: "100%",
+                      backgroundColor:
+                        theme.palette.mode === "light"
+                          ? "#f1f1f1"
+                          : "#ffffff15",
+                      color:
+                        theme.palette.mode === "light" ? "#000000" : "#ffffff",
                     }
               }
               name="subject"
@@ -111,6 +130,12 @@ const Support = () => {
                       lineHeight: "2",
                       height: "100px",
                       wordWrap: "wrap",
+                      backgroundColor:
+                        theme.palette.mode === "light"
+                          ? "#f1f1f1"
+                          : "#ffffff15",
+                      color:
+                        theme.palette.mode === "light" ? "#000000" : "#ffffff",
                     }
                   : {
                       gridArea: "field2",
@@ -122,6 +147,12 @@ const Support = () => {
                       height: "100px",
                       resize: "none",
                       fontFamily: "Arial",
+                      backgroundColor:
+                        theme.palette.mode === "light"
+                          ? "#f1f1f1"
+                          : "#ffffff15",
+                      color:
+                        theme.palette.mode === "light" ? "#000000" : "#ffffff",
                     }
               }
               name="text"

@@ -1,28 +1,36 @@
 import { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContextWrapper";
-
-const cardElementOptions = {
-  style: {
-    base: {
-      fontSize: "16px",
-      color: "#333",
-      "::placeholder": { color: "#aaa" },
-      fontFamily: "'Roboto', sans-serif",
-      padding: "12px",
-      backgroundColor: "#fff",
-    },
-    invalid: { color: "#ff1744" }, // 🔴 Rojo cuando hay error
-  },
-};
 
 const SaveCard = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
   const { company } = useAuth();
+  const theme = useTheme();
+
+  const cardElementOptions = {
+    style: {
+      base: {
+        fontSize: "16px",
+        color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
+        "::placeholder": { color: "#aaa" },
+        fontFamily: "'Roboto', sans-serif",
+        padding: "12px",
+        backgroundColor: "transparent",
+      },
+      invalid: { color: "#ff1744" }, // 🔴 Rojo cuando hay error
+    },
+  };
 
   const handleSaveCard = async () => {
     if (!stripe || !elements) return;
@@ -98,7 +106,8 @@ const SaveCard = () => {
           padding: 2,
           border: "1px solid #ccc",
           borderRadius: 2,
-          backgroundColor: "#f9f9f9",
+          backgroundColor:
+            theme.palette.mode === "light" ? "#ffffff" : "#ffffff15",
         }}
       >
         <CardElement options={cardElementOptions} />

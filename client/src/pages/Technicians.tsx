@@ -123,7 +123,7 @@ const Technicians = () => {
 
   useEffect(() => {
     getTechnicians();
-  }, [technicians]);
+  }, []);
 
   return (
     <ContentWraper onBack={() => navigate(-1)} name="Technicians">
